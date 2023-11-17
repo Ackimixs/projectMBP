@@ -13,8 +13,7 @@ int main(int argc, char** argv) {
     Graph g = Graph::createRandomGraph(100, .001);
 
     iofile::writeResultFile(filename, g, "exact");
-    iofile::writeResultFile(filename, g, "constructive");
-//    iofile::writeResultFile(filename, g, "exact_v3");
+//    iofile::writeResultFile(filename, g, "constructive");
 //    iofile::writeInputFile(filename, g);
 
     Logger::info(LogColor::fgMagenta + "PROGRAM ENDED" + LogColor::reset, __CONTEXT__);

@@ -1,14 +1,15 @@
 #include "Graph.hpp"
 
-Graph::Graph() : _size(0), _m(0), adjList(), adjListDirected() {
+Graph::Graph() : _size(0), _m(0), _adjList(), _successor(), _predecessor() {
     Logger::debug("Creating default graph...", __CONTEXT__);
 }
 
-Graph::Graph(int size) : _size(size), _m(0), adjList(size), adjListDirected(size) {
+Graph::Graph(int size) : _size(size), _m(0), _adjList(size), _successor(size), _predecessor(size) {
     Logger::debug("Creating a directed graph of size " + std::to_string(size), __CONTEXT__);
 }
 
-Graph::Graph(const Graph &graph) : _size(graph._size), _m(graph._m), adjList(graph.adjList), adjListDirected(graph.adjListDirected) {
+Graph::Graph(const Graph &graph) : _size(graph._size), _m(graph._m), _adjList(graph._adjList), _successor(graph._successor),
+                                   _predecessor(graph._predecessor) {
     Logger::debug("Creating a copy of a graph...", __CONTEXT__);
 }
 
@@ -25,11 +26,15 @@ int Graph::m() const {
 }
 
 std::vector<int> Graph::operator[](int vertex) const {
-    return this->adjList[vertex];
+    return this->_adjList[vertex];
 }
 
-std::vector<int> Graph::directed(int vertex) const {
-    return this->adjListDirected[vertex];
+std::vector<int> Graph::successor(int vertex) const {
+    return this->_successor[vertex];
+}
+
+std::vector<int> Graph::predecessor(int vertex) const {
+    return this->_predecessor[vertex];
 }
 
 void Graph::addEdge(int from, int to) {
@@ -40,9 +45,10 @@ void Graph::addEdge(int from, int to) {
     }
 
     this->_m++;
-    this->adjList[from].push_back(to);
-    this->adjList[to].push_back(from);
-    this->adjListDirected[from].push_back(to);
+    this->_adjList[from].push_back(to);
+    this->_adjList[to].push_back(from);
+    this->_successor[from].push_back(to);
+    this->_predecessor[to].push_back(from);
 }
 
 bool Graph::removeEdge(int from, int to) {
@@ -54,9 +60,9 @@ bool Graph::removeEdge(int from, int to) {
     }
 
     bool res = false;
-    for (int i = 0; i < this->adjList[from].size(); i++) {
-        if (this->adjList[from][i] == to) {
-            this->adjList[from].erase(this->adjList[from].begin() + i);
+    for (int i = 0; i < this->_adjList[from].size(); i++) {
+        if (this->_adjList[from][i] == to) {
+            this->_adjList[from].erase(this->_adjList[from].begin() + i);
             res = true;
         }
     }
@@ -68,9 +74,9 @@ bool Graph::removeEdge(int from, int to) {
 
     res = false;
 
-    for (int i = 0; i < this->adjList[to].size(); i++) {
-        if (this->adjList[to][i] == from) {
-            this->adjList[to].erase(this->adjList[to].begin() + i);
+    for (int i = 0; i < this->_adjList[to].size(); i++) {
+        if (this->_adjList[to][i] == from) {
+            this->_adjList[to].erase(this->_adjList[to].begin() + i);
             res = true;
         }
     }
@@ -82,9 +88,9 @@ bool Graph::removeEdge(int from, int to) {
 
     res = false;
 
-    for (int i = 0; i < this->adjListDirected[from].size(); i++) {
-        if (this->adjListDirected[from][i] == to) {
-            this->adjListDirected[from].erase(this->adjListDirected[from].begin() + i);
+    for (int i = 0; i < this->_successor[from].size(); i++) {
+        if (this->_successor[from][i] == to) {
+            this->_successor[from].erase(this->_successor[from].begin() + i);
             res = true;
         }
     }
@@ -98,8 +104,8 @@ bool Graph::removeEdge(int from, int to) {
 }
 
 bool Graph::isEdge(int from, int to) const {
-    for (int i = 0; i < this->adjList[from].size(); i++) {
-        if (this->adjList[from][i] == to) {
+    for (int i = 0; i < this->_adjList[from].size(); i++) {
+        if (this->_adjList[from][i] == to) {
             return true;
         }
     }
@@ -107,8 +113,8 @@ bool Graph::isEdge(int from, int to) const {
     return false;
 }
 
-int Graph::degres(int vertex) {
-    return this->adjList[vertex].size();
+int Graph::degree(int vertex) {
+    return this->_adjList[vertex].size();
 }
 
 std::vector<int> Graph::BFS(int start) {
@@ -135,7 +141,7 @@ void Graph::BFSVisit(int vertex, std::vector<Color> &color, std::vector<int> &pa
     while (!q.empty()) {
         int w = q.front();
         q.pop();
-        for (int z : this->adjList[w]) {
+        for (int z : this->_adjList[w]) {
             if (color[z] == Color::BLUE) {
                 color[z] = Color::WHITE;
                 parent[z] = w;
@@ -169,7 +175,7 @@ void Graph::DFSVisit(int vertex, std::vector<Color> &color, std::vector<int> &pa
     if (type == typeOfOutput::PREORDER) {
         res.push_back(vertex);
     }
-    for (int w : this->adjList[vertex]) {
+    for (int w : this->_adjList[vertex]) {
         if (color[w] == Color::BLUE) {
             parent[w] = vertex;
             this->DFSVisit(w, color, parent, res, type);
@@ -211,7 +217,7 @@ void Graph::print() {
 
     for (int i = 0; i < this->size(); i++) {
         std::cout << i << " -> ";
-        for (int j : this->adjList[i]) {
+        for (int j : this->_adjList[i]) {
             std::cout << j << " ";
         }
         std::cout << std::endl;
@@ -237,23 +243,23 @@ bool Graph::isBipartite() {
 }
 
 bool
-Graph::isBipartiteVisit(int vertex, std::vector<Color> &color, std::vector<int> &parent, std::vector<Color> &partie) {
+Graph::isBipartiteVisit(int vertex, std::vector<Color> &color, std::vector<int> &parent, std::vector<Color> &part) {
     std::queue<int> q;
     color[vertex] = Color::WHITE;
     q.push(vertex);
     while (!q.empty()) {
         int w = q.front();
         q.pop();
-        Color nextColor = partie[w] == Color::BLUE ? Color::RED : Color::BLUE;
-        for (int z : this->adjList[w]) {
+        Color nextColor = part[w] == Color::BLUE ? Color::RED : Color::BLUE;
+        for (int z : this->_adjList[w]) {
 
             // PART TO CHECK IF THE GRAPH IS BIPARTITE
-            if (partie[z] != Color::NONE) {
-                if (partie[z] == partie[w]) {
+            if (part[z] != Color::NONE) {
+                if (part[z] == part[w]) {
                     return false;
                 }
             } else {
-                partie[z] = nextColor;
+                part[z] = nextColor;
             }
 
             if (color[z] == Color::BLUE) {
