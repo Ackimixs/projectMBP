@@ -46,18 +46,15 @@ Graph iofile::readFile(const std::string &filename) {
 
 void iofile::writeResultFile(const std::string& filename, const Graph& g, const std::string& algoName) {
 
-    Logger::info("Writing to file : " + filename + "_" + algoName + ".out running " + LogColor::fgRed + algoName + LogColor::reset + " algorithm", __CONTEXT__);
-
-    std::ofstream outputFile(filename + "_" + algoName + ".out");
-
+    // ALGO RUNNER PART
     std::pair<int, Partition> t;
 
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 
     if (algoName == "exact") {
-        t = exact_V1::exactAlgorithm(g);
-    } else if (algoName == "exact_v2") {
         t = exact_V2::exactAlgorithm(g);
+    } else if (algoName == "exact_v1") {
+        t = exact_V1::exactAlgorithm(g);
     } else if (algoName == "constructive") {
         t = ConstructiveHeuristic_V1::constructiveHeuristic(g);
     } else if (algoName == "constructive_v4") {
@@ -75,7 +72,13 @@ void iofile::writeResultFile(const std::string& filename, const Graph& g, const 
 
     Logger::info("Time taken by " + LogColor::fgRed + algoName + LogColor::reset + " algorithm is : " + LogColor::fgBrightRed + std::to_string(time) + LogColor::reset + " ms", __CONTEXT__);
 
+    Logger::info("Writing to file : " + filename + "_" + algoName + ".out running " + LogColor::fgRed + algoName + LogColor::reset + " algorithm", __CONTEXT__);
+
+    std::ofstream outputFile(filename + "_" + algoName + ".out");
+
     if (outputFile.is_open()) {
+
+        // WRITING PART
 
         std::unordered_set<int> v1 = t.second.first;
 

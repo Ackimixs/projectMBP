@@ -6,13 +6,15 @@ int main(int argc, char** argv) {
     Logger::info(LogColor::fgMagenta + "STARTING PROGRAM" + LogColor::reset, __CONTEXT__);
 
 //    std::string filename = "first_test";
-    std::string filename = "random";
+//    std::string filename = "random";
+    std::string filename = "test";
 
 //    Graph g = iofile::readFile(filename);
-    Graph g = Graph::createRandomGraph(1000, .25);
+    Graph g = Graph::createRandomGraph(100, .001);
 
-//    iofile::writeResultFile(filename, g, "exact");
+    iofile::writeResultFile(filename, g, "exact");
     iofile::writeResultFile(filename, g, "constructive");
+//    iofile::writeResultFile(filename, g, "exact_v3");
 //    iofile::writeInputFile(filename, g);
 
     Logger::info(LogColor::fgMagenta + "PROGRAM ENDED" + LogColor::reset, __CONTEXT__);

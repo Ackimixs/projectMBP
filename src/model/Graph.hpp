@@ -27,6 +27,7 @@ private:
     std::vector<std::vector<int>> adjList;
     std::vector<std::vector<int>> adjListDirected;
     int _size;
+    int _m;
 
 protected:
     void BFSVisit(int vertex, std::vector<Color> &color, std::vector<int> &parent, std::vector<int> &res);

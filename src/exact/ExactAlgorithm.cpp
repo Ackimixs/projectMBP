@@ -2,7 +2,7 @@
 
 std::pair<int, Partition> exact_V1::exactAlgorithm(const Graph& g) {
 
-    int minNumberOfVertex = -1;
+    int minNumberOfVertex = INT_MAX;
 
     std::pair<std::unordered_set<int>, std::unordered_set<int>> res;
 
@@ -29,7 +29,7 @@ std::pair<int, Partition> exact_V1::exactAlgorithm(const Graph& g) {
             }
         }
 
-        if (numberOfVertex < minNumberOfVertex || minNumberOfVertex == -1) {
+        if (numberOfVertex < minNumberOfVertex) {
             minNumberOfVertex = numberOfVertex;
             res = std::make_pair(set1, set2);
         }
@@ -72,8 +72,86 @@ std::vector<std::vector<int>> exact_V1::getAllPair(int n) {
     return result;
 }
 
+std::pair<int, Partition> exact_V2::exactAlgorithm(const Graph &g) {
+    std::unordered_set<int> set;
+    set.insert(0);
+    Partition part;
+    int partSize = INT_MAX;
 
-int exact_V2::calculateCutSize(const Partition &partition, const Graph& graph) {
+    exact_V2::checkAllPair(g, part, partSize, set, g.size(), 1);
+
+    return std::make_pair(partSize, part);
+}
+
+void exact_V2::checkAllPair(const Graph &g, Partition &part, int &partSize, std::unordered_set<int> set, int n, int start, int k) {
+
+    if (set.size() == g.size() / 2) {
+
+        std::unordered_set<int> oppositeSet;
+
+        for (int i = 0; i < g.size(); i++) {
+            if (!set.contains(i)) {
+                oppositeSet.insert(i);
+            }
+        }
+
+        int numberOfVertex = 0;
+        for (int m : set) {
+            for (int l : oppositeSet) {
+                if (g.isEdge(m, l)) {
+                    numberOfVertex++;
+                }
+            }
+        }
+
+        if (numberOfVertex < partSize) {
+            part = std::make_pair(set, oppositeSet);
+
+            partSize = calculateCutSize(part, g);
+        }
+
+        return;
+    }
+
+    else {
+        for (int i = start; i < n / 2 + k; i++) {
+            std::unordered_set<int> newSet = set;
+
+            newSet.insert(i);
+
+            if (!checkPartition(g, partSize, newSet)) {
+                continue;
+            }
+
+            checkAllPair(g, part, partSize, newSet, n, i + 1, k + 1);
+        }
+    }
+}
+
+bool exact_V2::checkPartition(const Graph &g, int &partSize, std::unordered_set<int> set) {
+
+    std::unordered_set<int> oppositeSet;
+
+    // the oppositeSet is all the vertex before the greatest of the set
+    for (int i = 0; i < (*set.begin()); i++) {
+        if (!set.contains(i)) {
+            oppositeSet.insert(i);
+        }
+    }
+
+    int numberOfVertex = 0;
+    for (int k : set) {
+        for (int l : oppositeSet) {
+            if (g.isEdge(k, l)) {
+                numberOfVertex++;
+            }
+        }
+    }
+
+    return numberOfVertex < partSize;
+}
+
+int exact_V2::calculateCutSize(const Partition &partition, const Graph &graph) {
     int cutSize = 0;
 
     for (int i : partition.first) {
@@ -85,43 +163,4 @@ int exact_V2::calculateCutSize(const Partition &partition, const Graph& graph) {
     }
 
     return cutSize;
-}
-
-void
-exact_V2::explorePartitions(Partition &partition, int vertex, int &minCut, Partition &minPartition, const Graph &graph) {
-    // Function to explore all possible partitions of the graph
-
-    if (vertex == graph.size()) {
-        if (partition.first.size() != partition.second.size()) {
-            return;
-        }
-
-        int cutSize = calculateCutSize(partition, graph);
-
-        if (cutSize < minCut) {
-            minCut = cutSize;
-            minPartition = partition;
-        }
-
-        return;
-    }
-
-    partition.first.insert(vertex);
-    explorePartitions(partition, vertex + 1, minCut, minPartition, graph);
-
-    partition.first.erase(vertex);
-    partition.second.insert(vertex);
-    explorePartitions(partition, vertex + 1, minCut, minPartition, graph);
-
-    partition.second.erase(vertex);
-}
-
-std::pair<int, Partition> exact_V2::exactAlgorithm(const Graph &g) {
-    Partition partition;  // Initial partition
-    int minCut = INT_MAX;
-    Partition minPartition;
-
-    explorePartitions(partition, 0, minCut, minPartition, g);
-
-    return make_pair(minCut, minPartition);
 }

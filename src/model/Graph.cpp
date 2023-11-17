@@ -1,21 +1,15 @@
 #include "Graph.hpp"
 
-Graph::Graph() : _size(0), adjList(), adjListDirected() {
+Graph::Graph() : _size(0), _m(0), adjList(), adjListDirected() {
     Logger::debug("Creating default graph...", __CONTEXT__);
 }
 
-Graph::Graph(int size) : _size(size) {
+Graph::Graph(int size) : _size(size), _m(0), adjList(size), adjListDirected(size) {
     Logger::debug("Creating a directed graph of size " + std::to_string(size), __CONTEXT__);
-
-    this->adjList = std::vector<std::vector<int>>(size);
-    this->adjListDirected = std::vector<std::vector<int>>(size);
 }
 
-Graph::Graph(const Graph &graph) : _size(graph._size) {
+Graph::Graph(const Graph &graph) : _size(graph._size), _m(graph._m), adjList(graph.adjList), adjListDirected(graph.adjListDirected) {
     Logger::debug("Creating a copy of a graph...", __CONTEXT__);
-
-    this->adjList = graph.adjList;
-    this->adjListDirected = graph.adjListDirected;
 }
 
 Graph::~Graph() {
@@ -27,11 +21,7 @@ int Graph::size() const {
 }
 
 int Graph::m() const {
-    int res = 0;
-    for (int i = 0; i < this->size(); i++) {
-        res += int(this->adjList[i].size());
-    }
-    return res;
+    return _m;
 }
 
 std::vector<int> Graph::operator[](int vertex) const {
@@ -49,6 +39,7 @@ void Graph::addEdge(int from, int to) {
         throw std::invalid_argument("'to' need to be between 0 and the _size of the graph - 1");
     }
 
+    this->_m++;
     this->adjList[from].push_back(to);
     this->adjList[to].push_back(from);
     this->adjListDirected[from].push_back(to);
