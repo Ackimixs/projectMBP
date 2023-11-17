@@ -1,6 +1,5 @@
 #include "ConstructiveHeuristic.hpp"
 
-
 std::pair<int, Partition> ConstructiveHeuristic_V1::constructiveHeuristic(const Graph &graph) {
     int numVertices = graph.size();
 

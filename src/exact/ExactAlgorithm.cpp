@@ -1,4 +1,3 @@
-#include <climits>
 #include "ExactAlgorithm.hpp"
 
 std::pair<int, Partition> exact_V1::exactAlgorithm(const Graph& g) {

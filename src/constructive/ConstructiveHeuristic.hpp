@@ -1,7 +1,9 @@
 #pragma once
 
 #include "../model/Graph.hpp"
+
 #include <unordered_set>
+#include <climits>
 
 /**
  * LETS FUCKING GO
