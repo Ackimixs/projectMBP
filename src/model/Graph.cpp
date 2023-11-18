@@ -200,6 +200,7 @@ Graph Graph::createRandomGraph(int numberOfVertices, double edgeProbability) {
         throw std::invalid_argument("Invalid input parameters.");
     }
 
+    // Random number generator (better than rand())
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_real_distribution<double> edgeDist(0.0, 1.0);

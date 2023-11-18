@@ -7,6 +7,7 @@
 #include <queue>
 #include <random>
 #include <unordered_set>
+#include <map>
 
 enum Color {
     NONE,
@@ -22,8 +23,11 @@ enum typeOfOutput {
 
 typedef std::pair<std::unordered_set<int>, std::unordered_set<int>> Partition;
 
+// When the size of the graph is big (n = 100000) the program crash due to the adjMatrix size
 class Graph {
 private:
+    // maybe better as: std::map<int, std::unordered_set<int>> (but for the moment I don't want to change it)
+    // I will test it in local and see if it's better
     std::vector<std::vector<int>> _adjList;
     std::vector<std::vector<int>> _successor;
     std::vector<std::vector<int>> _predecessor;
