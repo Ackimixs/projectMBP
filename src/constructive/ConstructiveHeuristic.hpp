@@ -3,20 +3,19 @@
 #include "../model/Graph.hpp"
 
 #include <unordered_set>
-#include <climits>
 
 /**
  * LETS FUCKING GO
  * Work fine for a minimum size of edge
  * With 1000 vertex and 10000 edge that work well but
  * when 1000 vertex and 100000 edge that do not work partition size (40 -- 960)
+ *
+ * NOT GOOD ENOUGH (so idk if i have to upgrade it)
  */
 namespace ConstructiveHeuristic_V1 {
     std::pair<int, Partition> constructiveHeuristic(const Graph& graph);
 
     int countEdges(int vertex, const std::unordered_set<int>& vertexSet, const Graph& graph);
-
-    int calculateCutSize(const Partition& partition, const Graph& graph);
 };
 
 /**
@@ -24,8 +23,6 @@ namespace ConstructiveHeuristic_V1 {
 */
 namespace ConstructiveHeuristic_V3 {
     std::pair<int, Partition> constructiveHeuristic(const Graph& graph);
-
-    int calculateCutSize(const std::pair<std::unordered_set<int>, std::unordered_set<int>>& partition, const Graph& graph);
 
     int calculateMisclassifiedEdges(const Graph& graph, const std::unordered_set<int>& partition);
 };
@@ -39,6 +36,4 @@ namespace ConstructiveHeuristic_V4 {
     std::pair<int, Partition> constructiveHeuristic(const Graph& graph);
 
     int countEdges(int vertex, const std::unordered_set<int>& vertexSet, const Graph& graph);
-
-    int calculateCutSize(const Partition& partition, const Graph& graph);
 }

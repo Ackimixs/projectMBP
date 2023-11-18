@@ -3,6 +3,7 @@
 #include "Graph.hpp"
 #include "../exact/ExactAlgorithm.hpp"
 #include "../constructive/ConstructiveHeuristic.hpp"
+#include "../local_search/LocalSearch.hpp"
 
 #include <fstream>
 #include <sstream>

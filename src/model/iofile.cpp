@@ -59,6 +59,9 @@ void iofile::writeResultFile(const std::string& filename, const Graph& g, const 
         t = ConstructiveHeuristic_V1::constructiveHeuristic(g);
     } else if (algoName == "constructive_v4") {
         t = ConstructiveHeuristic_V4::constructiveHeuristic(g);
+
+    } else if (algoName == "local_search") {
+        t = LocalSearch_V1::localSearch(g);
     } else {
         Logger::error("No algo named : " + algoName, __CONTEXT__);
         exit(-1);

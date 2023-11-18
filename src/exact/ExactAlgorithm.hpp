@@ -2,8 +2,6 @@
 
 #include "../model/Graph.hpp"
 
-#include <climits>
-
 namespace exact_V1 {
     std::pair<int, Partition> exactAlgorithm(const Graph& g);
     std::vector<std::vector<int>> getAllPair(int n);
@@ -25,6 +23,4 @@ namespace exact_V2 {
     bool checkPartition(const Graph &g, int &partSize, std::unordered_set<int> set);
 
     void checkAllPair(const Graph &g, Partition &part, int &partSize, std::unordered_set<int> set, int n, int start, int k = 2);
-
-    int calculateCutSize(const Partition &partition, const Graph& graph);
 }

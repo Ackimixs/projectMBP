@@ -27,6 +27,9 @@ private:
     std::vector<std::vector<int>> _adjList;
     std::vector<std::vector<int>> _successor;
     std::vector<std::vector<int>> _predecessor;
+
+    std::vector<std::vector<int>> _adjMatrix;
+
     int _size;
     int _m;
 
@@ -77,3 +80,6 @@ public:
 
     void print();
 };
+
+int calculateCutSize(const Partition &partition, const Graph &graph);
+int calculateCutSize(const std::pair<std::vector<int>, std::vector<int>> &partition, const Graph &graph);

@@ -2,7 +2,12 @@
 
 std::pair<int, Partition> exact_V1::exactAlgorithm(const Graph& g) {
 
-    int minNumberOfVertex = INT_MAX;
+    if (g.size() % 2 != 0) {
+        Logger::error("Number of vertices is not even", __CONTEXT__);
+        return std::make_pair(-1, std::make_pair(std::unordered_set<int>(), std::unordered_set<int>()));
+    }
+
+    int minNumberOfVertex = __INT_MAX__;
 
     std::pair<std::unordered_set<int>, std::unordered_set<int>> res;
 
@@ -73,10 +78,15 @@ std::vector<std::vector<int>> exact_V1::getAllPair(int n) {
 }
 
 std::pair<int, Partition> exact_V2::exactAlgorithm(const Graph &g) {
+    if (g.size() % 2 != 0) {
+        Logger::error("Number of vertices is not even", __CONTEXT__);
+        return std::make_pair(-1, std::make_pair(std::unordered_set<int>(), std::unordered_set<int>()));
+    }
+
     std::unordered_set<int> set;
     set.insert(0);
     Partition part;
-    int partSize = INT_MAX;
+    int partSize = __INT_MAX__;
 
     exact_V2::checkAllPair(g, part, partSize, set, g.size(), 1);
 
@@ -149,18 +159,4 @@ bool exact_V2::checkPartition(const Graph &g, int &partSize, std::unordered_set<
     }
 
     return numberOfVertex < partSize;
-}
-
-int exact_V2::calculateCutSize(const Partition &partition, const Graph &graph) {
-    int cutSize = 0;
-
-    for (int i : partition.first) {
-        for (int j : partition.second) {
-            if (graph.isEdge(i, j)) {
-                cutSize++;
-            }
-        }
-    }
-
-    return cutSize;
 }

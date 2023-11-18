@@ -1,15 +1,15 @@
 #include "Graph.hpp"
 
-Graph::Graph() : _size(0), _m(0), _adjList(), _successor(), _predecessor() {
+Graph::Graph() : _size(0), _m(0), _adjList(), _successor(), _predecessor(), _adjMatrix() {
     Logger::debug("Creating default graph...", __CONTEXT__);
 }
 
-Graph::Graph(int size) : _size(size), _m(0), _adjList(size), _successor(size), _predecessor(size) {
+Graph::Graph(int size) : _size(size), _m(0), _adjList(size), _successor(size), _predecessor(size), _adjMatrix(size, std::vector<int>(size, 0)) {
     Logger::debug("Creating a directed graph of size " + std::to_string(size), __CONTEXT__);
 }
 
 Graph::Graph(const Graph &graph) : _size(graph._size), _m(graph._m), _adjList(graph._adjList), _successor(graph._successor),
-                                   _predecessor(graph._predecessor) {
+                                   _predecessor(graph._predecessor), _adjMatrix(graph._adjMatrix) {
     Logger::debug("Creating a copy of a graph...", __CONTEXT__);
 }
 
@@ -49,6 +49,8 @@ void Graph::addEdge(int from, int to) {
     this->_adjList[to].push_back(from);
     this->_successor[from].push_back(to);
     this->_predecessor[to].push_back(from);
+    this->_adjMatrix[from][to] = 1;
+    this->_adjMatrix[to][from] = 1;
 }
 
 bool Graph::removeEdge(int from, int to) {
@@ -95,26 +97,30 @@ bool Graph::removeEdge(int from, int to) {
         }
     }
 
+    for (int i = 0; i < this->_predecessor[to].size(); i++) {
+        if (this->_predecessor[to][i] == from) {
+            this->_predecessor[to].erase(this->_predecessor[to].begin() + i);
+            res = true;
+        }
+    }
+
     if (!res) {
         Logger::debug("Edge " + std::to_string(from) + " -> " + std::to_string(to) + " not found", __CONTEXT__);
         return false;
     }
 
+    this->_adjMatrix[from][to] = 0;
+    this->_adjMatrix[to][from] = 0;
+
     return res;
 }
 
 bool Graph::isEdge(int from, int to) const {
-    for (int i = 0; i < this->_adjList[from].size(); i++) {
-        if (this->_adjList[from][i] == to) {
-            return true;
-        }
-    }
-
-    return false;
+    return this->_adjMatrix[from][to] == 1;
 }
 
 int Graph::degree(int vertex) {
-    return this->_adjList[vertex].size();
+    return int(this->_adjList[vertex].size());
 }
 
 std::vector<int> Graph::BFS(int start) {
@@ -273,3 +279,30 @@ Graph::isBipartiteVisit(int vertex, std::vector<Color> &color, std::vector<int> 
     return true;
 }
 
+int calculateCutSize(const Partition &partition, const Graph &graph) {
+    int cutSize = 0;
+
+    for (int i : partition.first) {
+        for (int j : partition.second) {
+            if (graph.isEdge(i, j)) {
+                cutSize++;
+            }
+        }
+    }
+
+    return cutSize;
+}
+
+int calculateCutSize(const std::pair<std::vector<int>, std::vector<int>> &partition, const Graph &graph) {
+    int cutSize = 0;
+
+    for (int i : partition.first) {
+        for (int j : partition.second) {
+            if (graph.isEdge(i, j)) {
+                cutSize++;
+            }
+        }
+    }
+
+    return cutSize;
+}

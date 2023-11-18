@@ -54,34 +54,6 @@ int ConstructiveHeuristic_V1::countEdges(int vertex, const std::unordered_set<in
     return count;
 }
 
-int ConstructiveHeuristic_V1::calculateCutSize(const Partition &partition, const Graph &graph) {
-    int cutSize = 0;
-
-    for (int i : partition.first) {
-        for (int j : partition.second) {
-            if (graph.isEdge(i, j)) {
-                cutSize++;
-            }
-        }
-    }
-
-    return cutSize;
-}
-
-int ConstructiveHeuristic_V3::calculateCutSize(const std::pair<std::unordered_set<int>, std::unordered_set<int>> &partition, const Graph &graph) {
-    int cutSize = 0;
-
-    for (int i : partition.first) {
-        for (int j : partition.second) {
-            if (graph.isEdge(i, j)) {
-                cutSize++;
-            }
-        }
-    }
-
-    return cutSize;
-}
-
 std::pair<int, Partition> ConstructiveHeuristic_V3::constructiveHeuristic(const Graph &graph) {
     // Step 1: Initialization
     std::unordered_set<int> partition1, partition2;
@@ -195,6 +167,7 @@ std::pair<int, Partition> ConstructiveHeuristic_V4::constructiveHeuristic(const 
     Logger::debug("Size of second partition : " + std::to_string(part.second.size()), __CONTEXT__);
 
     // Ensure both partitions have the same size
+    // TODO Crash here in the else with first test graph
     while (part.first.size() != part.second.size()) {
         if (part.first.size() < part.second.size()) {
             int element = *part.second.end();
@@ -220,18 +193,4 @@ int ConstructiveHeuristic_V4::countEdges(int vertex, const std::unordered_set<in
         }
     }
     return count;
-}
-
-int ConstructiveHeuristic_V4::calculateCutSize(const Partition &partition, const Graph &graph) {
-    int cutSize = 0;
-
-    for (int i : partition.first) {
-        for (int j : partition.second) {
-            if (graph.isEdge(i, j)) {
-                cutSize++;
-            }
-        }
-    }
-
-    return cutSize;
 }
