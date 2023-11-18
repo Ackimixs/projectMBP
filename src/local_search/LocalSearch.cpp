@@ -2,12 +2,17 @@
 
 std::pair<int, Partition> LocalSearch_V1::localSearch(const Graph &g) {
 
-    std::pair<int, Partition> initialSolutionSet = ConstructiveHeuristic_V1::constructiveHeuristic(g);
+    if (g.size() % 2 != 0) {
+        Logger::error("The number of vertex must be even", __CONTEXT__);
+        exit(EXIT_FAILURE);
+    }
+
+    std::pair<int, Partition> initialSolutionSet = ConstructiveHeuristic::constructiveHeuristic(g);
 
     std::pair<std::vector<int>, std::vector<int>> newPartition = std::make_pair(std::vector<int>(initialSolutionSet.second.first.begin(), initialSolutionSet.second.first.end()),
                                                                                 std::vector<int>(initialSolutionSet.second.second.begin(), initialSolutionSet.second.second.end()));
 
-    int cutSize = calculateCutSize(initialSolutionSet.second, g);
+    int cutSize = initialSolutionSet.first;
 
     int beforeCutSize = __INT_MAX__;
 
@@ -21,7 +26,7 @@ std::pair<int, Partition> LocalSearch_V1::localSearch(const Graph &g) {
             int newCutSize = optimizeCalculateCutSize(newPartition, g, k, cutSize);
 
             if (newCutSize < cutSize) {
-                Logger::debug("Find better solution : " + std::to_string(newCutSize) + " !", __CONTEXT__);
+//                Logger::debug("Find better solution : " + std::to_string(newCutSize) + " !", __CONTEXT__);
 
                 cutSize = newCutSize;
             } else {
@@ -60,6 +65,8 @@ int
 LocalSearch_V1::optimizeCalculateCutSize(std::pair<std::vector<int>, std::vector<int>> partition, const Graph &graph,
                                          int index,
                                          int actualCutSize) {
+    // That cut size is a particular case of the calculateCutSize function, it calculates the cut size of the graph for a swap of two vertexes
+
     int newCutSize = actualCutSize;
 
     std::swap(partition.first[index], partition.second[index]);

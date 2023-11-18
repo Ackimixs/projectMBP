@@ -5,7 +5,7 @@ std::pair<int, Partition> ConstructiveHeuristic_V1::constructiveHeuristic(const 
 
     if (numVertices % 2 != 0) {
         Logger::error("Number of vertices is not even", __CONTEXT__);
-        return std::make_pair(-1, std::make_pair(std::unordered_set<int>(), std::unordered_set<int>()));
+        exit(EXIT_FAILURE);
     }
 
     Partition part = std::make_pair(std::unordered_set<int>(), std::unordered_set<int>());

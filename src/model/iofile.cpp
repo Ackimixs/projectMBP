@@ -2,9 +2,9 @@
 
 Graph iofile::readFile(const std::string &filename) {
 
-    Logger::info("reading file : " + filename + ".in", __CONTEXT__);
+    Logger::info("reading file : " + filename, __CONTEXT__);
 
-    std::ifstream inputFile(filename + ".in");
+    std::ifstream inputFile(filename);
 
     if (inputFile.is_open()) {
 
@@ -20,7 +20,7 @@ Graph iofile::readFile(const std::string &filename) {
 
         if (n % 2 != 0) {
             Logger::error("The number of vertex must be even", __CONTEXT__);
-            exit(1);
+            exit(EXIT_FAILURE);
         }
 
         Graph g(n);
@@ -40,11 +40,13 @@ Graph iofile::readFile(const std::string &filename) {
         return g;
     } else {
         Logger::error("Unable to open file " + filename, __CONTEXT__);
-        exit(1);
+        exit(EXIT_FAILURE);
     }
 }
 
 void iofile::writeResultFile(const std::string& filename, const Graph& g, const std::string& algoName) {
+
+    Logger::info("Writing to file : " + filename + " running " + LogColor::fgRed + algoName + LogColor::reset + " algorithm", __CONTEXT__);
 
     // ALGO RUNNER PART
     std::pair<int, Partition> t;
@@ -52,27 +54,27 @@ void iofile::writeResultFile(const std::string& filename, const Graph& g, const 
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 
     if (algoName == "exact") {
-        t = exact::exactAlgorithm(g);
+        t = Exact::exactAlgorithm(g);
     } else if (algoName == "constructive") {
         t = ConstructiveHeuristic::constructiveHeuristic(g);
     } else if (algoName == "local_search") {
         t = LocalSearch::localSearch(g);
+    } else if (algoName == "tabu_search") {
+        t = TabuSearch::tabuSearch(g);
     } else {
         Logger::error("No algo named : " + algoName, __CONTEXT__);
-        exit(-1);
+        exit(EXIT_FAILURE);
     }
-
-    Logger::info(LogColor::fgRed + algoName + LogColor::reset + " algorithm result : " + LogColor::fgBrightRed + std::to_string(t.first) + LogColor::reset + " vertex between the two sets", __CONTEXT__);
 
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 
     auto time = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
 
+    Logger::info(LogColor::fgRed + algoName + LogColor::reset + " algorithm result : " + LogColor::fgBrightRed + std::to_string(t.first) + LogColor::reset + " vertex between the two sets", __CONTEXT__);
+
     Logger::info("Time taken by " + LogColor::fgRed + algoName + LogColor::reset + " algorithm is : " + LogColor::fgBrightRed + std::to_string(time) + LogColor::reset + " ms", __CONTEXT__);
 
-    Logger::info("Writing to file : " + filename + "_" + algoName + ".out running " + LogColor::fgRed + algoName + LogColor::reset + " algorithm", __CONTEXT__);
-
-    std::ofstream outputFile(filename + "_" + algoName + ".out");
+    std::ofstream outputFile(filename);
 
     if (outputFile.is_open()) {
 
@@ -97,15 +99,15 @@ void iofile::writeResultFile(const std::string& filename, const Graph& g, const 
 
     } else {
         Logger::error("Unable to open file " + filename, __CONTEXT__);
-        exit(1);
+        exit(EXIT_FAILURE);
     }
 }
 
 void iofile::writeInputFile(const std::string &filename, const Graph &g) {
 
-    Logger::debug("Writing to file : " + filename + ".in", __CONTEXT__);
+    Logger::debug("Writing to file : " + filename, __CONTEXT__);
 
-    std::ofstream outputFile(filename + ".in");
+    std::ofstream outputFile(filename);
 
     if (outputFile.is_open()) {
 
@@ -119,6 +121,6 @@ void iofile::writeInputFile(const std::string &filename, const Graph &g) {
 
     } else {
         Logger::error("Unable to open file " + filename, __CONTEXT__);
-        exit(1);
+        exit(EXIT_FAILURE);
     }
 }

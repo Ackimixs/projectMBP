@@ -1,10 +1,10 @@
 #include "ExactAlgorithm.hpp"
 
-std::pair<int, Partition> exact_V1::exactAlgorithm(const Graph& g) {
+std::pair<int, Partition> Exact_V1::exactAlgorithm(const Graph& g) {
 
     if (g.size() % 2 != 0) {
         Logger::error("Number of vertices is not even", __CONTEXT__);
-        return std::make_pair(-1, std::make_pair(std::unordered_set<int>(), std::unordered_set<int>()));
+        exit(EXIT_FAILURE);
     }
 
     int minNumberOfVertex = __INT_MAX__;
@@ -39,7 +39,7 @@ std::pair<int, Partition> exact_V1::exactAlgorithm(const Graph& g) {
     return std::make_pair(minNumberOfVertex, res);
 }
 
-void exact_V1::generateCombinations(std::vector<int>& currentCombination, int start, int n, int k, std::vector<std::vector<int>>& result) {
+void Exact_V1::generateCombinations(std::vector<int>& currentCombination, int start, int n, int k, std::vector<std::vector<int>>& result) {
     if (k == 0) {
         // Add the current combination to the result vector
         result.push_back(currentCombination);
@@ -53,7 +53,7 @@ void exact_V1::generateCombinations(std::vector<int>& currentCombination, int st
     }
 }
 
-std::vector<std::vector<int>> exact_V1::getAllPair(int n) {
+std::vector<std::vector<int>> Exact_V1::getAllPair(int n) {
 
     std::vector<std::vector<int>> result;
 
@@ -72,7 +72,7 @@ std::vector<std::vector<int>> exact_V1::getAllPair(int n) {
     return result;
 }
 
-std::pair<int, Partition> exact_V2::exactAlgorithm(const Graph &g) {
+std::pair<int, Partition> Exact_V2::exactAlgorithm(const Graph &g) {
     if (g.size() % 2 != 0) {
         Logger::error("Number of vertices is not even", __CONTEXT__);
         return std::make_pair(-1, std::make_pair(std::unordered_set<int>(), std::unordered_set<int>()));
@@ -83,12 +83,12 @@ std::pair<int, Partition> exact_V2::exactAlgorithm(const Graph &g) {
     Partition part;
     int partSize = __INT_MAX__;
 
-    exact_V2::checkAllPair(g, part, partSize, set, g.size(), 1);
+    Exact_V2::checkAllPair(g, part, partSize, set, g.size(), 1);
 
     return std::make_pair(partSize, part);
 }
 
-void exact_V2::checkAllPair(const Graph &g, Partition &part, int &partSize, std::unordered_set<int> set, int n, int start, int k) {
+void Exact_V2::checkAllPair(const Graph &g, Partition &part, int &partSize, std::unordered_set<int> set, int n, int start, int k) {
 
     if (set.size() == g.size() / 2) {
 
@@ -133,7 +133,7 @@ void exact_V2::checkAllPair(const Graph &g, Partition &part, int &partSize, std:
     }
 }
 
-bool exact_V2::checkPartition(const Graph &g, int &partSize, std::unordered_set<int> set) {
+bool Exact_V2::checkPartition(const Graph &g, int &partSize, std::unordered_set<int> set) {
 
     std::unordered_set<int> oppositeSet;
 

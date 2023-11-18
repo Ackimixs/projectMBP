@@ -2,7 +2,7 @@
 
 #include "../model/Graph.hpp"
 
-namespace exact_V1 {
+namespace Exact_V1 {
     std::pair<int, Partition> exactAlgorithm(const Graph& g);
     std::vector<std::vector<int>> getAllPair(int n);
     void generateCombinations(std::vector<int>& currentCombination, int start, int n, int k, std::vector<std::vector<int>>& result);
@@ -17,7 +17,7 @@ namespace exact_V1 {
  * and the the stop condition of the tree recursion is not often reached because the time that there is more edge is
  * when the two set are almost full.
  */
-namespace exact_V2 {
+namespace Exact_V2 {
     std::pair<int, Partition> exactAlgorithm(const Graph& g);
 
     bool checkPartition(const Graph &g, int &partSize, std::unordered_set<int> set);
@@ -28,4 +28,4 @@ namespace exact_V2 {
 /**
  * the good exact algorithm is the second
  */
-namespace exact = exact_V2;
+namespace Exact = Exact_V1;
