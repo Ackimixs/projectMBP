@@ -34,8 +34,8 @@ private:
 
     std::vector<std::vector<int>> _adjMatrix;
 
-    int _size;
-    int _m;
+    unsigned int _size;
+    unsigned int _m;
 
 protected:
     void BFSVisit(int vertex, std::vector<Color> &color, std::vector<int> &parent, std::vector<int> &res);

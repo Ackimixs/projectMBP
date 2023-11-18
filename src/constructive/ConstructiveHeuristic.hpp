@@ -37,3 +37,8 @@ namespace ConstructiveHeuristic_V4 {
 
     int countEdges(int vertex, const std::unordered_set<int>& vertexSet, const Graph& graph);
 }
+
+/**
+ * the good constructive heuristic is the first
+ */
+namespace ConstructiveHeuristic = ConstructiveHeuristic_V1;

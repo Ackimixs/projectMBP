@@ -52,16 +52,11 @@ void iofile::writeResultFile(const std::string& filename, const Graph& g, const 
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 
     if (algoName == "exact") {
-        t = exact_V2::exactAlgorithm(g);
-    } else if (algoName == "exact_v1") {
-        t = exact_V1::exactAlgorithm(g);
+        t = exact::exactAlgorithm(g);
     } else if (algoName == "constructive") {
-        t = ConstructiveHeuristic_V1::constructiveHeuristic(g);
-    } else if (algoName == "constructive_v4") {
-        t = ConstructiveHeuristic_V4::constructiveHeuristic(g);
-
+        t = ConstructiveHeuristic::constructiveHeuristic(g);
     } else if (algoName == "local_search") {
-        t = LocalSearch_V1::localSearch(g);
+        t = LocalSearch::localSearch(g);
     } else {
         Logger::error("No algo named : " + algoName, __CONTEXT__);
         exit(-1);

@@ -11,18 +11,13 @@ std::pair<int, Partition> exact_V1::exactAlgorithm(const Graph& g) {
 
     std::pair<std::unordered_set<int>, std::unordered_set<int>> res;
 
+    // get every pair like [[0, 1, 2], [0, 1, 3], [0, 1, 4], ...]
     auto pair = getAllPair(g.size());
 
     for (int j = 0; j < pair.size() / 2; j++) {
-        std::unordered_set<int> set1;
-        std::unordered_set<int> set2;
-        for (auto v : pair[j]) {
-            set1.insert(v);
-        }
-        for (auto v : pair[pair.size() - (j + 1)]) {
-            set2.insert(v);
-        }
-
+        // Convert vector to unordered_set
+        std::unordered_set<int> set1(pair[j].begin(), pair[j].end());
+        std::unordered_set<int> set2(pair[pair.size() - j - 1].begin(), pair[pair.size() - j - 1].end());
 
         int numberOfVertex = 0;
 

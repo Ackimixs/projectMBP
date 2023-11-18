@@ -17,3 +17,8 @@ namespace LocalSearch_V1 {
                              int actualCutSize);
 
 }
+
+/**
+ * the good local search is the first
+ */
+namespace LocalSearch = LocalSearch_V1;
