@@ -26,7 +26,7 @@ std::pair<int, Partition> LocalSearch_V1::localSearch(const Graph &g) {
             int newCutSize = optimizeCalculateCutSize(newPartition, g, k, cutSize);
 
             if (newCutSize < cutSize) {
-//                Logger::debug("Find better solution : " + std::to_string(newCutSize) + " !", __CONTEXT__);
+                Logger::debug("Find better solution : " + std::to_string(newCutSize) + " !", __CONTEXT__);
 
                 cutSize = newCutSize;
             } else {

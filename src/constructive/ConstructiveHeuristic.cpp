@@ -11,6 +11,7 @@ std::pair<int, Partition> ConstructiveHeuristic_V1::constructiveHeuristic(const 
     Partition part = std::make_pair(std::unordered_set<int>(), std::unordered_set<int>());
 
     part.first.insert(0);
+    int initialCutSize = 0;
 
     for (int i = 1; i < numVertices; ++i) {
         int edgesToA = countEdges(i, part.first, graph);
@@ -18,8 +19,10 @@ std::pair<int, Partition> ConstructiveHeuristic_V1::constructiveHeuristic(const 
 
         if (edgesToA > edgesToB || (edgesToA == edgesToB && part.first.size() < part.second.size())) {
             part.first.insert(i);
+            initialCutSize += edgesToB;
         } else {
             part.second.insert(i);
+            initialCutSize += edgesToA;
         }
     }
 
@@ -27,6 +30,7 @@ std::pair<int, Partition> ConstructiveHeuristic_V1::constructiveHeuristic(const 
     Logger::debug("Size of second partition : " + std::to_string(part.second.size()), __CONTEXT__);
 
     // Ensure both partitions have the same size
+    // TODO the only part of the graph that is not optimized i think
     while (part.first.size() != part.second.size()) {
         if (part.first.size() < part.second.size()) {
             int element = *part.second.begin();
