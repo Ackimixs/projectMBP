@@ -2,6 +2,7 @@
 
 #include <string>
 #include <chrono>
+#include <vector>
 
 namespace Utils {
     bool isNumber(const std::string& s);
