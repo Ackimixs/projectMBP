@@ -5,6 +5,7 @@
 #include "Constants.hpp"
 
 #include <iostream>
+#include <iomanip>
 
 enum class LogLevel {
     DEBUG,
