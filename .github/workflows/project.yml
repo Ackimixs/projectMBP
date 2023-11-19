@@ -100,4 +100,4 @@ jobs:
 
       - name: run
         working-directory: ${{github.workspace}}/build
-        run: ./projectMBP -f random 3000 .75 -a tabu_search --debug
+        run: ./projectMBP -f random 500 .75 -a tabu_search --debug
