@@ -86,4 +86,3 @@ public:
 };
 
 int calculateCutSize(const Partition &partition, const Graph &graph);
-int calculateCutSize(const std::pair<std::vector<int>, std::vector<int>> &partition, const Graph &graph);
