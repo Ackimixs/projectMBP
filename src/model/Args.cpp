@@ -1,32 +1,30 @@
 #include "Args.hpp"
 
 void readArgs(std::map <std::string, std::vector<std::string>> &args) {
-/*
-    if (args.contains("-h") || args.contains("--help")) {
+    if (args.find("-h") != args.end() || args.find("--help") != args.end()) {
         std::cout << "./ggraph [-a | --algo, -n | --nodes, -v | --version, --debug, -p | --probability, -t | --templates]" << std::endl;
         exit(EXIT_SUCCESS);
     }
 
-    if (args.contains("-v") || args.contains("--version")) {
+    if (args.find("-v") != args.end() || args.find("--version") != args.end()) {
         std::cout << "Graph v" << PROJECT_VERSION << std::endl;
         exit(EXIT_SUCCESS);
     }
 
-    if (args.contains("--debug")) {
+    if (args.find("--debug") != args.end()) {
         Logger::setLogLevel(LogLevel::DEBUG);
     } else {
         Logger::setLogLevel(LogLevel::INFO);
     }
-*/
 }
 
 void runGraphArgs(std::map<std::string, std::vector<std::string>> &args) {
-/*    Graph g;
+    Graph g;
 
-    if ((args.contains("-f") || args.contains("--file")) && (args.contains("-a") || args.contains("--algo"))) {
-        std::vector<std::string> fArgs = args.contains("-f") ? args["-f"] : args["--file"];
+    if ((args.find("-f") != args.end()  || args.find("--file") != args.end() ) && (args.find("-a") != args.end()  || args.find("--algo") != args.end() )) {
+        std::vector<std::string> fArgs = args.find("-f") != args.end()  ? args["-f"] : args["--file"];
 
-        std::vector<std::string> algoArgs = args.contains("-a") ? args["-a"] : args["--algo"];
+        std::vector<std::string> algoArgs = args.find("-a") != args.end()  ? args["-a"] : args["--algo"];
 
         std::string filename;
 
@@ -79,5 +77,5 @@ void runGraphArgs(std::map<std::string, std::vector<std::string>> &args) {
             Logger::error("Invalid algorithm name", __CONTEXT__);
             exit(EXIT_FAILURE);
         }
-    }*/
+    }
 }

@@ -51,20 +51,24 @@ void iofile::writeResultFile(const std::string& filename, const Graph& g, const 
     // ALGO RUNNER PART
     std::pair<int, Partition> t;
 
-    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+    std::pair<int, Partition> (*algo)(const Graph&) = nullptr;
 
     if (algoName == "exact") {
-        t = Exact::exactAlgorithm(g);
+        algo = Exact::exactAlgorithm;
     } else if (algoName == "constructive") {
-        t = ConstructiveHeuristic::constructiveHeuristic(g);
+        algo = ConstructiveHeuristic::constructiveHeuristic;
     } else if (algoName == "local_search") {
-        t = LocalSearch::localSearch(g);
+        algo = LocalSearch::localSearch;
     } else if (algoName == "tabu_search") {
-        t = TabuSearch::tabuSearch(g);
+        algo = TabuSearch::tabuSearch;
     } else {
         Logger::error("No algo named : " + algoName, __CONTEXT__);
         exit(EXIT_FAILURE);
     }
+
+    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+
+    t = algo(g);
 
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 
@@ -80,9 +84,9 @@ void iofile::writeResultFile(const std::string& filename, const Graph& g, const 
 
         // WRITING PART
 
-        std::unordered_set<int> v1 = t.second.first;
+        std::vector<int> v1 = t.second.first;
 
-        std::unordered_set<int> v2 = t.second.second;
+        std::vector<int> v2 = t.second.second;
 
         int vertexBetweenSet = t.first;
 
