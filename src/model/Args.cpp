@@ -18,7 +18,7 @@ void readArgs(std::map <std::string, std::vector<std::string>> &args) {
     }
 }
 
-void runGraphArgs(std::map<std::string, std::vector<std::string>> &args) {
+void runGraphAlgoArgs(std::map<std::string, std::vector<std::string>> &args) {
     Graph g;
 
     if ((args.find("-f") != args.end()  || args.find("--file") != args.end() ) && (args.find("-a") != args.end()  || args.find("--algo") != args.end() )) {
@@ -28,28 +28,11 @@ void runGraphArgs(std::map<std::string, std::vector<std::string>> &args) {
 
         std::string filename;
 
-        if (fArgs[0] == "random") {
-            if (fArgs.size() != 3) {
-                Logger::error("Invalid number of arguments for random graph", __CONTEXT__);
-                exit(EXIT_FAILURE);
-            } else {
-                int n = std::stoi(fArgs[1]);
-                double p = std::stod(fArgs[2]);
-                g = Graph::createRandomGraph(n, p);
+        filename = fArgs[0];
 
-                filename = "random_" + std::to_string(n) + "_" + std::to_string(p);
+        std::string readFilename = "../instances/" + (algoArgs[0] == "all" ? "new_instances" : algoArgs[0]) + "/" + filename + ".in";
 
-                std::string inFilename = "../instances/" + (algoArgs[0] == "all" ? "new_instances" : algoArgs[0]) + "/" + filename + ".in";
-
-                iofile::writeInputFile(inFilename, g);
-            }
-        } else {
-            filename = fArgs[0];
-
-            std::string readFilename = "../instances/" + (algoArgs[0] == "all" ? "new_instances" : algoArgs[0]) + "/" + filename + ".in";
-
-            g = iofile::readFile(readFilename);
-        }
+        g = iofile::readFile(readFilename);
 
         // Run algo
         if (algoArgs[0] == "exact") {
@@ -78,4 +61,39 @@ void runGraphArgs(std::map<std::string, std::vector<std::string>> &args) {
             exit(EXIT_FAILURE);
         }
     }
+}
+
+void runGraphRandomArgs(std::map<std::string, std::vector<std::string>> &args) {
+
+    int n = 1000;
+    double p = .5;
+
+    Graph g;
+
+    if (args.find("-n") != args.end() || args.find("--nodes") != args.end()) {
+        std::vector<std::string> nArgs = args.find("-n") != args.end() ? args["-n"] : args["--nodes"];
+
+        n = std::stoi(nArgs[0]);
+    }
+
+    if (args.find("-p") != args.end() || args.find("--probability") != args.end()) {
+        std::vector<std::string> pArgs = args.find("-p") != args.end() ? args["-p"] : args["--probability"];
+
+        p = std::stod(pArgs[0]);
+    }
+
+    std::string filename;
+
+    if (args.find("-f") != args.end() || args.find("--file") != args.end()) {
+        std::vector<std::string> fArgs = args.find("-f") != args.end() ? args["-f"] : args["--file"];
+
+        filename = fArgs[0];
+    } else {
+        filename = "random_" + std::to_string(n) + "_" + std::to_string(p) + ".in";
+    }
+
+    Logger::debug("Generating graph with " + std::to_string(n) + " nodes and " + std::to_string(p) + " probability and save it to : " + filename, __CONTEXT__);
+
+    g = Graph::createRandomGraph(n, p);
+    iofile::writeInputFile(filename, g);
 }

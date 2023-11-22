@@ -9,6 +9,8 @@ std::pair<int, Partition> TabuSearch_V1::tabuSearch(const Graph &g) {
 
     std::pair<int, Partition> res = ConstructiveHeuristic::constructiveHeuristic(g);
 
+    Partition newPartition = res.second;
+
     int iterationWithoutUpgrade = 0;
 
     int cutSize = res.first;
@@ -30,8 +32,8 @@ std::pair<int, Partition> TabuSearch_V1::tabuSearch(const Graph &g) {
 
         std::swap(newNewPartition.first[i], newNewPartition.second[j]);
 
-//        int newCutSize = optimizeCalculateCutSize(newNewPartition, g, i, j, cutSize);
-        int c = calculateCutSize(newNewPartition, g);
+        int c = LocalSearch_Utils::optimizeCalculateCutSize(newNewPartition, g, i, j, cutSize);
+//        int c = calculateCutSize(newNewPartition, g);
 
         LocalSearch(newNewPartition, g, c);
 
@@ -48,8 +50,7 @@ std::pair<int, Partition> TabuSearch_V1::tabuSearch(const Graph &g) {
 
     Logger::debug(LogColor::bgBlue + "Size difference : " + std::to_string(baseCutSize - cutSize) + LogColor::reset, __CONTEXT__);
 
-    return std::make_pair(cutSize, Partition(std::unordered_set<int>(newPartition.first.begin(), newPartition.first.end()),
-                                              std::unordered_set<int>(newPartition.second.begin(), newPartition.second.end())));
+    return std::make_pair(cutSize, newPartition);
 }
 
 void

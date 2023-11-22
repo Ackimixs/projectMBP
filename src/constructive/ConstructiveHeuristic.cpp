@@ -26,11 +26,7 @@ std::pair<int, Partition> ConstructiveHeuristic_V1::constructiveHeuristic(const 
         }
     }
 
-    Logger::debug("Size of first partition : " + std::to_string(part.first.size()), __CONTEXT__);
-    Logger::debug("Size of second partition : " + std::to_string(part.second.size()), __CONTEXT__);
-
     // Ensure both partitions have the same size
-    // TODO the only part of the graph that is not optimized i think
     while (part.first.size() != part.second.size()) {
         if (part.first.size() < part.second.size()) {
             int element = *part.second.begin();
@@ -187,4 +183,46 @@ int ConstructiveHeuristic_Utils::countEdges(int vertex, const std::vector<int> &
         }
     }
     return count;
+}
+
+std::pair<int, Partition> ConstructiveHeuristic_V5::constructiveHeuristic(const Graph &graph) {
+    if (graph.size() % 2 != 0) {
+        Logger::error("Number of vertices is not even", __CONTEXT__);
+        return std::make_pair(-1, std::make_pair(std::vector<int>(), std::vector<int>()));
+    }
+
+    Partition resPart;
+
+    std::vector<Color> color = std::vector<Color>(graph.size(), Color::BLUE);
+
+    std::vector<int> res;
+
+    for (int v = 0; v < graph.size(); v++) {
+        if (color[v] == Color::BLUE) {
+            dfs(v, graph, color, res);
+        }
+    }
+
+    for (int i = 0; i < graph.size() / 2; i++) {
+        resPart.first.push_back(res[i]);
+    }
+    for (int i = graph.size() / 2; i < graph.size(); i++) {
+        resPart.second.push_back(res[i]);
+    }
+
+    int cutSize = calculateCutSize(resPart, graph);
+
+    return std::make_pair(cutSize, resPart);
+}
+
+void
+ConstructiveHeuristic_V5::dfs(int vertex, const Graph &graph, std::vector<Color> &color, std::vector<int> &res) {
+    color[vertex] = Color::WHITE;
+    for (int neighbor : graph[vertex]) {
+        if (color[neighbor] == Color::BLUE) {
+            dfs(neighbor, graph, color, res);
+        }
+    }
+    color[vertex] = Color::RED;
+    res.push_back(vertex);
 }

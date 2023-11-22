@@ -39,6 +39,16 @@ namespace ConstructiveHeuristic_Utils {
 }
 
 /**
+ * idea : dfs
+ * result : so fucking good
+ */
+namespace ConstructiveHeuristic_V5 {
+    std::pair<int, Partition> constructiveHeuristic(const Graph& graph);
+
+    void dfs(int vertex, const Graph &graph, std::vector<Color> &color, std::vector<int> &res);
+}
+
+/**
  * the good constructive heuristic is the first
  */
-namespace ConstructiveHeuristic = ConstructiveHeuristic_V1;
+namespace ConstructiveHeuristic = ConstructiveHeuristic_V5;

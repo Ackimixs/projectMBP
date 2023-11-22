@@ -23,7 +23,7 @@ jobs:
         run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
 
-  exact-algo:
+  generate-graph:
     needs:
       - build
 
@@ -38,66 +38,12 @@ jobs:
       - name: Build
         run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
-      - name: run
-        working-directory: ${{github.workspace}}/build
-        run: ./projectMBP -f random 20 .75 -a exact --debug
+      - name: create graph
+        working-directory: ${{github.workspace}}
+        run: ./create_graph.sh
 
-
-  constructive-algo:
-    needs:
-      - build
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Configure CMake
-        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-
-      - name: Build
-        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
-
-      - name: run
-        working-directory: ${{github.workspace}}/build
-        run: ./projectMBP -f random 500 .25 -a constructive --debug
-
-
-  local-search-algo:
-    needs:
-      - build
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Configure CMake
-        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-
-      - name: Build
-        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
-
-      - name: run
-        working-directory: ${{github.workspace}}/build
-        run: ./projectMBP -f random 3000 .75 -a local_search --debug
-
-
-  tabu-search-algo:
-    needs:
-      - build
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Configure CMake
-        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-
-      - name: Build
-        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
-
-      - name: run
-        working-directory: ${{github.workspace}}/build
-        run: ./projectMBP -f random 500 .75 -a tabu_search --debug
+      - name: push to artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: graph
+          path: ./build/graph_gen
