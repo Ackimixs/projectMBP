@@ -1,13 +1,17 @@
 #include "Utils.hpp"
 
-bool Utils::isNumber(const std::string &s) {
+bool Utils::isNumber(const std::string &s) {/*
     return !s.empty() && std::find_if(s.begin(),
                                       s.end(), [](unsigned char c) { return !std::isdigit(c); }) == s.end();
+*/
+    return true;  
 }
 
 bool Utils::isDouble(const std::string &s) {
-    return !s.empty() && std::find_if(s.begin(),
-                                      s.end(), [](unsigned char c) { return !std::isdigit(c) && c != '.'; }) == s.end();
+/*    return !s.empty() && std::find_if(s.begin(),
+                s.end(), [](unsigned char c) { return !std::isdigit(c) && c != '.'; }) == s.end();
+*/
+    return true;
 }
 
 std::string Utils::getCurrentDateTime() {
