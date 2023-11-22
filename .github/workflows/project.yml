@@ -75,7 +75,8 @@ jobs:
       - name: run exact algo
         working-directory: ${{github.workspace}}/build
         run: |
-          ./projectMPB algo -a exact
+          ls -al
+          ./projectMPB algo -a exact --debug
         shell: bash
 
 #  run-constructive-algo:
