@@ -78,101 +78,83 @@ jobs:
           ./projectMBP algo exact --debug
         shell: bash
 
-#  run-constructive-algo:
-#    needs:
-#      - generate-graph
-#
-#    runs-on: ubuntu-latest
-#
-#    steps:
-#      - uses: actions/checkout@v3
-#
-#      - name: Configure CMake
-#        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-#
-#      - name: Build
-#        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
-#
-#      - name: download graph
-#        uses: actions/download-artifact@v2
-#        with:
-#          name: graph
-#          path: ./instances/new_instances
-#
-#      - name: copie graph
-#        working-directory: ${{github.workspace}}
-#        run: |
-#          cp ./instances/new_instances/* ./instances/constructive
-#        shell: bash
-#
-#      - name: run constructive algo
-#        working-directory: ${{github.workspace}}/build
-#        run: |
-#          ./projectMPB algo -a constructive
-#        shell: bash
-#
-#  run-local-search-algo:
-#    needs:
-#      - generate-graph
-#
-#    runs-on: ubuntu-latest
-#
-#    steps:
-#      - uses: actions/checkout@v3
-#
-#      - name: Configure CMake
-#        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-#
-#      - name: Build
-#        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
-#
-#      - name: download graph
-#        uses: actions/download-artifact@v2
-#        with:
-#          name: graph
-#          path: ./instances/new_instances
-#
-#      - name: copie graph
-#        working-directory: ${{github.workspace}}
-#        run: |
-#          cp ./instances/new_instances/* ./instances/local_search
-#        shell: bash
-#
-#      - name: run local search algo
-#        working-directory: ${{github.workspace}}/build
-#        run: |
-#          ./projectMPB algo -a local_search
-#        shell: bash
-#
-#  run-tabu-search-algo:
-#    needs:
-#      - generate-graph
-#
-#    runs-on: ubuntu-latest
-#
-#    steps:
-#      - uses: actions/checkout@v3
-#
-#      - name: Configure CMake
-#        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-#
-#      - name: Build
-#        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
-#
-#      - name: download graph
-#        uses: actions/download-artifact@v2
-#        with:
-#          name: graph
-#          path: ./instances/new_instances
-#
-#      - name: copie graph
-#        working-directory: ${{github.workspace}}
-#        run: |
-#          cp ./instances/new_instances/* ./instances/tabu_search
-#        shell: bash
-#
-#      - name: run tabu search algo
-#        working-directory: ${{github.workspace}}/build
-#        run: |
-#          ./projectMPB algo -a tabu_search
-#        shell: bash
+  run-constructive-algo:
+    needs:
+      - generate-graph
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configure CMake
+        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+
+      - name: Build
+        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+
+      - name: download graph
+        uses: actions/download-artifact@v3
+        with:
+          name: graph
+          path: ./instances/
+
+      - name: run constructive algo
+        working-directory: ${{github.workspace}}/build
+        run: |
+          ./projectMPB algo constructive --debug
+        shell: bash
+
+  run-local-search-algo:
+    needs:
+      - generate-graph
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configure CMake
+        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+
+      - name: Build
+        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+
+      - name: download graph
+        uses: actions/download-artifact@v3
+        with:
+          name: graph
+          path: ./instances/
+
+      - name: run local search algo
+        working-directory: ${{github.workspace}}/build
+        run: |
+          ./projectMPB algo local_search --debug
+        shell: bash
+
+  run-tabu-search-algo:
+    needs:
+      - generate-graph
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configure CMake
+        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+
+      - name: Build
+        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+
+      - name: download graph
+        uses: actions/download-artifact@v3
+        with:
+          name: graph
+          path: ./instances/
+
+      - name: run tabu search algo
+        working-directory: ${{github.workspace}}/build
+        run: |
+          ./projectMPB algo tabu_search --debug
+        shell: bash
