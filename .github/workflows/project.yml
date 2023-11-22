@@ -40,7 +40,10 @@ jobs:
 
       - name: create graph
         working-directory: ${{github.workspace}}
-        run: ./create_graph.sh
+        run: |
+          chmod +x ./create_graph.sh
+          ./create_graph.sh
+        shell: bash
 
       - name: push to artifacts
         uses: actions/upload-artifact@v2
