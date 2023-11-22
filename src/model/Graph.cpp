@@ -293,17 +293,3 @@ int calculateCutSize(const Partition &partition, const Graph &graph) {
 
     return cutSize;
 }
-
-int calculateCutSize(const std::pair<std::vector<int>, std::vector<int>> &partition, const Graph &graph) {
-    int cutSize = 0;
-
-    for (int i : partition.first) {
-        for (int j : partition.second) {
-            if (graph.isEdge(i, j)) {
-                cutSize++;
-            }
-        }
-    }
-
-    return cutSize;
-}
