@@ -95,7 +95,7 @@ void Exact_V2::checkAllPair(const Graph &g, Partition &part, int &partSize, std:
         std::unordered_set<int> oppositeSet;
 
         for (int i = 0; i < g.size(); i++) {
-            if (!set.contains(i)) {
+            if (set.find(i) != set.end()) {
                 oppositeSet.insert(i);
             }
         }
@@ -139,7 +139,7 @@ bool Exact_V2::checkPartition(const Graph &g, int &partSize, std::unordered_set<
 
     // the oppositeSet is all the vertex before the greatest of the set
     for (int i = 0; i < (*set.begin()); i++) {
-        if (!set.contains(i)) {
+        if (set.find(i) != set.end()) {
             oppositeSet.insert(i);
         }
     }
