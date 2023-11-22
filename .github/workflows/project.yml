@@ -75,13 +75,9 @@ jobs:
       - name: run exact algo
         working-directory: ${{github.workspace}}/build
         run: |
-          ls -al
-          echo "ls -al"
-          ls -al ../
-          echo "ls -al ../"
-          ls -al ../instances
-          echo "ls -al ../instances"
-          ./projectMBP algo exact --debug
+          cd ..
+          pwd
+#          ./projectMBP algo exact --debug
         shell: bash
 
 #  run-constructive-algo:
