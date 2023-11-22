@@ -75,9 +75,7 @@ jobs:
       - name: run exact algo
         working-directory: ${{github.workspace}}/build
         run: |
-          cd ..
-          pwd
-#          ./projectMBP algo exact --debug
+          ./projectMBP algo exact --debug
         shell: bash
 
 #  run-constructive-algo:
