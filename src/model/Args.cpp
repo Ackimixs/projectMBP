@@ -1,7 +1,7 @@
 #include "Args.hpp"
 
 void readArgs(std::map <std::string, std::vector<std::string>> &args) {
-
+/*
     if (args.contains("-h") || args.contains("--help")) {
         std::cout << "./ggraph [-a | --algo, -n | --nodes, -v | --version, --debug, -p | --probability, -t | --templates]" << std::endl;
         exit(EXIT_SUCCESS);
@@ -17,11 +17,11 @@ void readArgs(std::map <std::string, std::vector<std::string>> &args) {
     } else {
         Logger::setLogLevel(LogLevel::INFO);
     }
-
+*/
 }
 
 void runGraphArgs(std::map<std::string, std::vector<std::string>> &args) {
-    Graph g;
+/*    Graph g;
 
     if ((args.contains("-f") || args.contains("--file")) && (args.contains("-a") || args.contains("--algo"))) {
         std::vector<std::string> fArgs = args.contains("-f") ? args["-f"] : args["--file"];
@@ -79,5 +79,5 @@ void runGraphArgs(std::map<std::string, std::vector<std::string>> &args) {
             Logger::error("Invalid algorithm name", __CONTEXT__);
             exit(EXIT_FAILURE);
         }
-    }
+    }*/
 }
