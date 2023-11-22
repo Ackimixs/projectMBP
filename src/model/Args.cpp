@@ -40,25 +40,25 @@ void runGraphAlgoArgs(std::map<std::string, std::vector<std::string>> &args, con
             for (const auto &entry : std::filesystem::directory_iterator("../instances/new_instances")) {
                 std::string filename = entry.path().string();
 
-                std::string outFilename = "../result/exact/" + entry.path().filename().string();
-
                 Logger::debug("Reading file : " + filename, __CONTEXT__);
 
                 g = iofile::readFile(filename);
+
+                std::string outFilename = "../results/exact/" + entry.path().filename().string();
 
                 if (g.size() < 30) {
                     iofile::writeResultFile(outFilename, g, "exact");
                 }
 
-                outFilename = "../result/constructive/" + entry.path().filename().string();
+                outFilename = "../results/constructive/" + entry.path().filename().string();
 
                 iofile::writeResultFile(outFilename, g, "constructive");
 
-                outFilename = "../result/local_search/" + entry.path().filename().string();
+                outFilename = "../results/local_search/" + entry.path().filename().string();
 
                 iofile::writeResultFile(outFilename, g, "local_search");
 
-                outFilename = "../result/tabu_search/" + entry.path().filename().string();
+                outFilename = "../results/tabu_search/" + entry.path().filename().string();
 
                 iofile::writeResultFile(outFilename, g, "tabu_search");
             }
@@ -66,7 +66,7 @@ void runGraphAlgoArgs(std::map<std::string, std::vector<std::string>> &args, con
             for (const auto &entry : std::filesystem::directory_iterator("../instances/" + algoName)) {
                 std::string filename = entry.path().string();
 
-                std::string outFilename = "../result/" + algoName + "/" + entry.path().filename().string();
+                std::string outFilename = "../results/" + algoName + "/" + entry.path().filename().string();
 
                 Logger::debug("Reading file : " + filename, __CONTEXT__);
 
