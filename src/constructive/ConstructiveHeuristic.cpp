@@ -195,19 +195,10 @@ std::pair<int, Partition> ConstructiveHeuristic_V5::constructiveHeuristic(const 
 
     std::vector<Color> color = std::vector<Color>(graph.size(), Color::BLUE);
 
-    std::vector<int> res;
-
     for (int v = 0; v < graph.size(); v++) {
         if (color[v] == Color::BLUE) {
-            dfs(v, graph, color, res);
+            dfs(v, graph, color, resPart);
         }
-    }
-
-    for (int i = 0; i < graph.size() / 2; i++) {
-        resPart.first.push_back(res[i]);
-    }
-    for (int i = graph.size() / 2; i < graph.size(); i++) {
-        resPart.second.push_back(res[i]);
     }
 
     int cutSize = calculateCutSize(resPart, graph);
@@ -216,7 +207,7 @@ std::pair<int, Partition> ConstructiveHeuristic_V5::constructiveHeuristic(const 
 }
 
 void
-ConstructiveHeuristic_V5::dfs(int vertex, const Graph &graph, std::vector<Color> &color, std::vector<int> &res) {
+ConstructiveHeuristic_V5::dfs(int vertex, const Graph &graph, std::vector<Color> &color, Partition &res) {
     color[vertex] = Color::WHITE;
     for (int neighbor : graph[vertex]) {
         if (color[neighbor] == Color::BLUE) {
@@ -224,5 +215,9 @@ ConstructiveHeuristic_V5::dfs(int vertex, const Graph &graph, std::vector<Color>
         }
     }
     color[vertex] = Color::RED;
-    res.push_back(vertex);
+    if (res.second.size() < res.first.size()) {
+        res.second.push_back(vertex);
+    } else {
+        res.first.push_back(vertex);
+    }
 }

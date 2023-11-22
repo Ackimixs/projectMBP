@@ -17,7 +17,7 @@ std::pair<int, Partition> TabuSearch_V1::tabuSearch(const Graph &g) {
 
     int baseCutSize = cutSize;
 
-    int maxIteration = 70;
+    int maxIteration = MAX_ITERATION;
 
     while (iterationWithoutUpgrade < maxIteration) {
 

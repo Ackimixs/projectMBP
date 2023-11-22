@@ -18,47 +18,62 @@ void readArgs(std::map <std::string, std::vector<std::string>> &args) {
     }
 }
 
-void runGraphAlgoArgs(std::map<std::string, std::vector<std::string>> &args) {
+void runGraphAlgoArgs(std::map<std::string, std::vector<std::string>> &args, const std::string& algoName) {
     Graph g;
 
-    if ((args.find("-f") != args.end()  || args.find("--file") != args.end() ) && (args.find("-a") != args.end()  || args.find("--algo") != args.end() )) {
-        std::vector<std::string> fArgs = args.find("-f") != args.end()  ? args["-f"] : args["--file"];
+    // TODO usage : if algoName = "all" then run all algo in the folder instance/<algo_name> and save the result in ./result/<algo_name>
 
-        std::vector<std::string> algoArgs = args.find("-a") != args.end()  ? args["-a"] : args["--algo"];
+    if ((args.find("-i") != args.end() || args.find("--input") != args.end()) && (args.find("-o") != args.end() || args.find("--output") != args.end())) {
+        std::vector<std::string> iArgs = args.find("-i") != args.end() ? args["-i"] : args["--input"];
 
-        std::string filename;
+        std::vector<std::string> oArgs = args.find("-o") != args.end() ? args["-o"] : args["--output"];
 
-        filename = fArgs[0];
+        std::string readFilename = iArgs[0];
 
-        std::string readFilename = "../instances/" + (algoArgs[0] == "all" ? "new_instances" : algoArgs[0]) + "/" + filename + ".in";
+        std::string outFilename = oArgs[0];
 
         g = iofile::readFile(readFilename);
 
-        // Run algo
-        if (algoArgs[0] == "exact") {
-            std::string outFilename = "../instances/" + algoArgs[0] + "/" + filename + "_" + algoArgs[0] + ".out";
+        iofile::writeResultFile(outFilename, g, algoName);
+    } else {
+        if (algoName == "all") {
+            for (const auto &entry : std::filesystem::directory_iterator("../instances/new_instances")) {
+                std::string filename = entry.path().string();
 
-            iofile::writeResultFile(outFilename, g, algoArgs[0]);
-        } else if (algoArgs[0] == "constructive") {
-            std::string outFilename = "../instances/" + algoArgs[0] + "/" + filename + ".out";
+                std::string outFilename = "../result/exact/" + entry.path().filename().string();
 
-            iofile::writeResultFile(outFilename, g, algoArgs[0]);
-        } else if (algoArgs[0] == "local_search") {
-            std::string outFilename = "../instances/" + algoArgs[0] + "/" + filename + ".out";
+                Logger::debug("Reading file : " + filename, __CONTEXT__);
 
-            iofile::writeResultFile(outFilename, g, algoArgs[0]);
-        } else if (algoArgs[0] == "tabu_search") {
-            std::string outFilename = "../instances/" + algoArgs[0] + "/" + filename + ".out";
+                g = iofile::readFile(filename);
 
-            iofile::writeResultFile(outFilename, g, algoArgs[0]);
-        } else if (algoArgs[0] == "all") {
-            iofile::writeResultFile("../instances/exact/" + filename + ".out", g, "exact");
-            iofile::writeResultFile("../instances/constructive/" + filename + ".out", g, "constructive");
-            iofile::writeResultFile("../instances/local_search/" + filename + ".out", g, "local_search");
-            iofile::writeResultFile("../instances/tabu_search/" + filename + ".out", g, "tabu_search");
+                if (g.size() < 30) {
+                    iofile::writeResultFile(outFilename, g, "exact");
+                }
+
+                outFilename = "../result/constructive/" + entry.path().filename().string();
+
+                iofile::writeResultFile(outFilename, g, "constructive");
+
+                outFilename = "../result/local_search/" + entry.path().filename().string();
+
+                iofile::writeResultFile(outFilename, g, "local_search");
+
+                outFilename = "../result/tabu_search/" + entry.path().filename().string();
+
+                iofile::writeResultFile(outFilename, g, "tabu_search");
+            }
         } else {
-            Logger::error("Invalid algorithm name", __CONTEXT__);
-            exit(EXIT_FAILURE);
+            for (const auto &entry : std::filesystem::directory_iterator("../instances/" + algoName)) {
+                std::string filename = entry.path().string();
+
+                std::string outFilename = "../result/" + algoName + "/" + entry.path().filename().string();
+
+                Logger::debug("Reading file : " + filename, __CONTEXT__);
+
+                g = iofile::readFile(filename);
+
+                iofile::writeResultFile(filename, g, algoName);
+            }
         }
     }
 }
@@ -84,8 +99,8 @@ void runGraphRandomArgs(std::map<std::string, std::vector<std::string>> &args) {
 
     std::string filename;
 
-    if (args.find("-f") != args.end() || args.find("--file") != args.end()) {
-        std::vector<std::string> fArgs = args.find("-f") != args.end() ? args["-f"] : args["--file"];
+    if (args.find("-o") != args.end() || args.find("--output") != args.end()) {
+        std::vector<std::string> fArgs = args.find("-o") != args.end() ? args["-o"] : args["--output"];
 
         filename = fArgs[0];
     } else {

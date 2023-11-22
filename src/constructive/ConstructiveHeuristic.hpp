@@ -45,7 +45,7 @@ namespace ConstructiveHeuristic_Utils {
 namespace ConstructiveHeuristic_V5 {
     std::pair<int, Partition> constructiveHeuristic(const Graph& graph);
 
-    void dfs(int vertex, const Graph &graph, std::vector<Color> &color, std::vector<int> &res);
+    void dfs(int vertex, const Graph &graph, std::vector<Color> &color, Partition &res);
 }
 
 /**

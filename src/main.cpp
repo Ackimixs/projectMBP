@@ -29,7 +29,9 @@ int main(int argc, char* argv[]) {
     if (std::string(argv[1]) == "generate") {
         runGraphRandomArgs(args);
     } else if (std::string(argv[1]) == "algo") {
-        runGraphAlgoArgs(args);
+        std::string algoName = argv[2];
+
+        runGraphAlgoArgs(args, algoName);
     }
 
     // LOCAL TEST

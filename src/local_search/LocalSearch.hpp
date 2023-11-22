@@ -39,4 +39,4 @@ namespace LocalSearch_Utils {
 /**
  * the good local search is the first
  */
-namespace LocalSearch = LocalSearch_V1;
+namespace LocalSearch = LocalSearch_V3;
