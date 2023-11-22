@@ -21,7 +21,7 @@ enum typeOfOutput {
     POSTORDER
 };
 
-typedef std::pair<std::unordered_set<int>, std::unordered_set<int>> Partition;
+typedef std::pair<std::vector<int>, std::vector<int>> Partition;
 
 // When the size of the graph is big (n = 100000) the program crash due to the adjMatrix size
 class Graph {

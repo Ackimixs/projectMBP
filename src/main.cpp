@@ -2,6 +2,7 @@
 #include "model/Args.hpp"
 
 int main(int argc, char* argv[]) {
+    Logger::setLogLevel(LogLevel::DEBUG);
 
     // Convert argv to map
     std::map<std::string, std::vector<std::string>> args;

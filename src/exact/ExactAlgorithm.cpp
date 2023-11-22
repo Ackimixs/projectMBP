@@ -9,15 +9,15 @@ std::pair<int, Partition> Exact_V1::exactAlgorithm(const Graph& g) {
 
     int minNumberOfVertex = __INT_MAX__;
 
-    std::pair<std::unordered_set<int>, std::unordered_set<int>> res;
+    std::pair<std::vector<int>, std::vector<int>> res;
 
     // get every pair like [[0, 1, 2], [0, 1, 3], [0, 1, 4], ...]
     auto pair = getAllPair(g.size());
 
     for (int j = 0; j < pair.size() / 2; j++) {
         // Convert vector to unordered_set
-        std::unordered_set<int> set1(pair[j].begin(), pair[j].end());
-        std::unordered_set<int> set2(pair[pair.size() - j - 1].begin(), pair[pair.size() - j - 1].end());
+        std::vector<int> set1(pair[j].begin(), pair[j].end());
+        std::vector<int> set2(pair[pair.size() - j - 1].begin(), pair[pair.size() - j - 1].end());
 
         int numberOfVertex = 0;
 
@@ -75,33 +75,33 @@ std::vector<std::vector<int>> Exact_V1::getAllPair(int n) {
 std::pair<int, Partition> Exact_V2::exactAlgorithm(const Graph &g) {
     if (g.size() % 2 != 0) {
         Logger::error("Number of vertices is not even", __CONTEXT__);
-        return std::make_pair(-1, std::make_pair(std::unordered_set<int>(), std::unordered_set<int>()));
+        return std::make_pair(-1, std::make_pair(std::vector<int>(), std::vector<int>()));
     }
 
-    std::unordered_set<int> set;
-    set.insert(0);
+    std::vector<int> vec;
+    vec.push_back(0);
     Partition part;
     int partSize = __INT_MAX__;
 
-    Exact_V2::checkAllPair(g, part, partSize, set, g.size(), 1);
+    Exact_V2::checkAllPair(g, part, partSize, vec, g.size(), 1);
 
     return std::make_pair(partSize, part);
 }
 
-void Exact_V2::checkAllPair(const Graph &g, Partition &part, int &partSize, std::unordered_set<int> set, int n, int start, int k) {
+void Exact_V2::checkAllPair(const Graph &g, Partition &part, int &partSize, std::vector<int> vector, int n, int start, int k) {
 
-    if (set.size() == g.size() / 2) {
+    if (vector.size() == g.size() / 2) {
 
-        std::unordered_set<int> oppositeSet;
+        std::vector<int> oppositeSet;
 
         for (int i = 0; i < g.size(); i++) {
-            if (set.find(i) != set.end()) {
-                oppositeSet.insert(i);
+            if (std::find(vector.begin(), vector.end(), i) != vector.end()) {
+                oppositeSet.push_back(i);
             }
         }
 
         int numberOfVertex = 0;
-        for (int m : set) {
+        for (int m : vector) {
             for (int l : oppositeSet) {
                 if (g.isEdge(m, l)) {
                     numberOfVertex++;
@@ -110,7 +110,7 @@ void Exact_V2::checkAllPair(const Graph &g, Partition &part, int &partSize, std:
         }
 
         if (numberOfVertex < partSize) {
-            part = std::make_pair(set, oppositeSet);
+            part = std::make_pair(vector, oppositeSet);
 
             partSize = calculateCutSize(part, g);
         }
@@ -120,9 +120,9 @@ void Exact_V2::checkAllPair(const Graph &g, Partition &part, int &partSize, std:
 
     else {
         for (int i = start; i < n / 2 + k; i++) {
-            std::unordered_set<int> newSet = set;
+            std::vector<int> newSet = vector;
 
-            newSet.insert(i);
+            newSet.push_back(i);
 
             if (!checkPartition(g, partSize, newSet)) {
                 continue;
@@ -133,19 +133,19 @@ void Exact_V2::checkAllPair(const Graph &g, Partition &part, int &partSize, std:
     }
 }
 
-bool Exact_V2::checkPartition(const Graph &g, int &partSize, std::unordered_set<int> set) {
+bool Exact_V2::checkPartition(const Graph &g, int &partSize, std::vector<int> vec) {
 
-    std::unordered_set<int> oppositeSet;
+    std::vector<int> oppositeSet;
 
     // the oppositeSet is all the vertex before the greatest of the set
-    for (int i = 0; i < (*set.begin()); i++) {
-        if (set.find(i) != set.end()) {
-            oppositeSet.insert(i);
+    for (int i = 0; i < (*vec.begin()); i++) {
+        if (std::find(vec.begin(), vec.end(), i) == vec.end()) {
+            oppositeSet.push_back(i);
         }
     }
 
     int numberOfVertex = 0;
-    for (int k : set) {
+    for (int k : vec) {
         for (int l : oppositeSet) {
             if (g.isEdge(k, l)) {
                 numberOfVertex++;

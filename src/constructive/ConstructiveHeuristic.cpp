@@ -8,20 +8,20 @@ std::pair<int, Partition> ConstructiveHeuristic_V1::constructiveHeuristic(const 
         exit(EXIT_FAILURE);
     }
 
-    Partition part = std::make_pair(std::unordered_set<int>(), std::unordered_set<int>());
+    Partition part = std::make_pair(std::vector<int>(), std::vector<int>());
 
-    part.first.insert(0);
+    part.first.push_back(0);
     int initialCutSize = 0;
 
     for (int i = 1; i < numVertices; ++i) {
-        int edgesToA = countEdges(i, part.first, graph);
-        int edgesToB = countEdges(i, part.second, graph);
+        int edgesToA = ConstructiveHeuristic_Utils:: countEdges(i, part.first, graph);
+        int edgesToB = ConstructiveHeuristic_Utils::countEdges(i, part.second, graph);
 
         if (edgesToA > edgesToB || (edgesToA == edgesToB && part.first.size() < part.second.size())) {
-            part.first.insert(i);
+            part.first.push_back(i);
             initialCutSize += edgesToB;
         } else {
-            part.second.insert(i);
+            part.second.push_back(i);
             initialCutSize += edgesToA;
         }
     }
@@ -34,12 +34,12 @@ std::pair<int, Partition> ConstructiveHeuristic_V1::constructiveHeuristic(const 
     while (part.first.size() != part.second.size()) {
         if (part.first.size() < part.second.size()) {
             int element = *part.second.begin();
-            part.second.erase(element);
-            part.first.insert(element);
+            part.second.erase(part.second.begin());
+            part.first.push_back(element);
         } else {
             int element = *part.first.begin();
-            part.first.erase(element);
-            part.second.insert(element);
+            part.first.erase(part.first.begin());
+            part.second.push_back(element);
         }
     }
 
@@ -48,41 +48,31 @@ std::pair<int, Partition> ConstructiveHeuristic_V1::constructiveHeuristic(const 
     return make_pair(cutSize, part);
 }
 
-int ConstructiveHeuristic_V1::countEdges(int vertex, const std::unordered_set<int> &vertexSet, const Graph &graph) {
-    int count = 0;
-    for (int neighbor : graph[vertex]) {
-        if (vertexSet.count(neighbor) > 0) {
-            count++;
-        }
-    }
-    return count;
-}
-
 std::pair<int, Partition> ConstructiveHeuristic_V3::constructiveHeuristic(const Graph &graph) {
     // Step 1: Initialization
-    std::unordered_set<int> partition1, partition2;
+    std::vector<int> partition1, partition2;
 
     // Alternate assignment to partitions while maintaining equal sizes
-    partition1.insert(0);
+    partition1.push_back(0);
 
     // Step 2: Iterative Improvement
     for (int vertex = 1; vertex < graph.size(); ++vertex) {
         // Calculate misclassified edges for both partitions
-        std::unordered_set<int> newPartition1 = partition1;
-        newPartition1.insert(vertex);
+        std::vector<int> newPartition1 = partition1;
+        newPartition1.push_back(vertex);
         int misclassified1 = calculateCutSize(std::make_pair(newPartition1, partition2), graph);
 
-        std::unordered_set<int> newPartition2 = partition2;
-        newPartition2.insert(vertex);
+        std::vector<int> newPartition2 = partition2;
+        newPartition2.push_back(vertex);
         int misclassified2 = calculateCutSize(std::make_pair(newPartition2, partition1), graph);
 
         // Assign vertex to the partition with fewer misclassified edges
         if (misclassified1 < misclassified2) {
-            partition1.insert(vertex);
-            partition2.erase(vertex);
+            partition1.push_back(vertex);
+            partition2.erase(std::find(partition2.begin(), partition2.end(), vertex));
         } else {
-            partition2.insert(vertex);
-            partition1.erase(vertex);
+            partition2.push_back(vertex);
+            partition1.erase(std::find(partition1.begin(), partition1.end(), vertex));
         }
     }
 
@@ -96,11 +86,11 @@ std::pair<int, Partition> ConstructiveHeuristic_V3::constructiveHeuristic(const 
         int misclassified2 = calculateCutSize(std::make_pair(partition2, partition1), graph);
 
         if (misclassified1 < misclassified2) {
-            partition1.erase(vertex);
-            partition2.insert(vertex);
+            partition1.erase(std::find(partition1.begin(), partition1.end(), vertex));
+            partition2.push_back(vertex);
         } else {
-            partition2.erase(vertex);
-            partition1.insert(vertex);
+            partition2.erase(std::find(partition2.begin(), partition2.end(), vertex));
+            partition1.push_back(vertex);
         }
     }
 
@@ -135,12 +125,12 @@ std::pair<int, Partition> ConstructiveHeuristic_V4::constructiveHeuristic(const 
 
     if (numVertices % 2 != 0) {
         Logger::error("Number of vertices is not even", __CONTEXT__);
-        return std::make_pair(-1, std::make_pair(std::unordered_set<int>(), std::unordered_set<int>()));
+        return std::make_pair(-1, std::make_pair(std::vector<int>(), std::vector<int>()));
     }
 
     Partition part;
 
-    part.first.insert(0);
+    part.first.push_back(0);
 
     std::vector<int> reamingVertices;
 
@@ -157,13 +147,13 @@ std::pair<int, Partition> ConstructiveHeuristic_V4::constructiveHeuristic(const 
         }
         reamingVertices.erase(std::find(reamingVertices.begin(), reamingVertices.end(), vertex));
 
-        int edgesToA = countEdges(vertex, part.first, graph);
-        int edgesToB = countEdges(vertex, part.second, graph);
+        int edgesToA = ConstructiveHeuristic_Utils::countEdges(vertex, part.first, graph);
+        int edgesToB = ConstructiveHeuristic_Utils::countEdges(vertex, part.second, graph);
 
         if (edgesToA > edgesToB || (edgesToA == edgesToB && part.first.size() < part.second.size())) {
-            part.first.insert(vertex);
+            part.first.push_back(vertex);
         } else {
-            part.second.insert(vertex);
+            part.second.push_back(vertex);
         }
     }
 
@@ -175,12 +165,12 @@ std::pair<int, Partition> ConstructiveHeuristic_V4::constructiveHeuristic(const 
     while (part.first.size() != part.second.size()) {
         if (part.first.size() < part.second.size()) {
             int element = *part.second.end();
-            part.second.erase(element);
-            part.first.insert(element);
+            part.second.erase(part.second.end());
+            part.first.push_back(element);
         } else {
             int element = *part.first.end();
-            part.first.erase(element);
-            part.second.insert(element);
+            part.first.erase(part.first.end());
+            part.second.push_back(element);
         }
     }
 
@@ -189,10 +179,10 @@ std::pair<int, Partition> ConstructiveHeuristic_V4::constructiveHeuristic(const 
     return make_pair(cutSize, part);
 }
 
-int ConstructiveHeuristic_V4::countEdges(int vertex, const std::unordered_set<int> &vertexSet, const Graph &graph) {
+int ConstructiveHeuristic_Utils::countEdges(int vertex, const std::vector<int> &vertexVector, const Graph &graph) {
     int count = 0;
     for (int neighbor : graph[vertex]) {
-        if (vertexSet.count(neighbor) > 0) {
+        if (std::find(vertexVector.begin(), vertexVector.end(), neighbor) != vertexVector.end()) {
             count++;
         }
     }

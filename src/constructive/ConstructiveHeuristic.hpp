@@ -14,9 +14,7 @@
  */
 namespace ConstructiveHeuristic_V1 {
     std::pair<int, Partition> constructiveHeuristic(const Graph& graph);
-
-    int countEdges(int vertex, const std::unordered_set<int>& vertexSet, const Graph& graph);
-};
+}
 
 /**
 * idea : get every vertex
@@ -34,8 +32,10 @@ namespace ConstructiveHeuristic_V3 {
  */
 namespace ConstructiveHeuristic_V4 {
     std::pair<int, Partition> constructiveHeuristic(const Graph& graph);
+}
 
-    int countEdges(int vertex, const std::unordered_set<int>& vertexSet, const Graph& graph);
+namespace ConstructiveHeuristic_Utils {
+    int countEdges(int vertex, const std::vector<int> &vertexVector, const Graph& graph);
 }
 
 /**

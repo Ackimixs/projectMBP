@@ -9,9 +9,6 @@ std::pair<int, Partition> TabuSearch_V1::tabuSearch(const Graph &g) {
 
     std::pair<int, Partition> res = ConstructiveHeuristic::constructiveHeuristic(g);
 
-    std::pair<std::vector<int>, std::vector<int>> newPartition = std::make_pair(std::vector<int>(res.second.first.begin(), res.second.first.end()),
-                                                                                std::vector<int>(res.second.second.begin(), res.second.second.end()));
-
     int iterationWithoutUpgrade = 0;
 
     int cutSize = res.first;
@@ -26,10 +23,10 @@ std::pair<int, Partition> TabuSearch_V1::tabuSearch(const Graph &g) {
 
         iterationWithoutUpgrade++;
 
-        int i = rand() % newPartition.first.size();
-        int j = rand() % newPartition.second.size();
+        int i = rand() % res.second.first.size();
+        int j = rand() % res.second.second.size();
 
-        std::pair<std::vector<int>, std::vector<int>> newNewPartition = newPartition;
+        std::pair<std::vector<int>, std::vector<int>> newNewPartition = res.second;
 
         std::swap(newNewPartition.first[i], newNewPartition.second[j]);
 
@@ -58,20 +55,23 @@ std::pair<int, Partition> TabuSearch_V1::tabuSearch(const Graph &g) {
 void
 TabuSearch_V1::LocalSearch(std::pair<std::vector<int>, std::vector<int>> &partition, const Graph &g, int &cutSize) {
 
-    int beforeCutSize = __INT_MAX__;
-
     int maxIteration = 0;
 
-    while (cutSize < beforeCutSize) {
-        beforeCutSize = cutSize;
+    bool improvement = true;
+
+    while (improvement) {
+
+        improvement = false;
+
         for (int k = 0; k < partition.first.size(); k++) {
             std::swap(partition.first[k], partition.second[k]);
 
-            int newCutSize = optimizeCalculateCutSize(partition, g, k, k, cutSize);
+            int newCutSize = LocalSearch_Utils::optimizeCalculateCutSize(partition, g, k, k, cutSize);
 
             if (newCutSize < cutSize) {
                 Logger::debug("Find better solution : " + std::to_string(newCutSize) + " !", __CONTEXT__);
 
+                improvement = true;
                 cutSize = newCutSize;
             } else {
                 std::swap(partition.first[k], partition.second[k]);
@@ -87,41 +87,4 @@ TabuSearch_V1::LocalSearch(std::pair<std::vector<int>, std::vector<int>> &partit
             break;
         }
     }
-}
-
-int
-TabuSearch_V1::optimizeCalculateCutSize(std::pair<std::vector<int>, std::vector<int>> partition, const Graph &graph,
-                                        int firstIndex, int secondIndex, int actualCutSize) {
-    // That cut size is a particular case of the calculateCutSize function, it calculates the cut size of the graph for a swap of two vertexes
-
-    int newCutSize = actualCutSize;
-
-    std::swap(partition.first[firstIndex], partition.second[secondIndex]);
-
-    for (auto v : partition.second) {
-        if (graph.isEdge(partition.first[firstIndex], v)) {
-            newCutSize--;
-        }
-    }
-
-    for (auto v : partition.first) {
-        if (graph.isEdge(partition.second[secondIndex], v)) {
-            newCutSize--;
-        }
-    }
-
-    std::swap(partition.first[firstIndex], partition.second[secondIndex]);
-
-    for (auto v : partition.second) {
-        if (graph.isEdge(partition.first[firstIndex], v)) {
-            newCutSize++;
-        }
-    }
-
-    for (auto v : partition.first) {
-        if (graph.isEdge(partition.second[secondIndex], v)) {
-            newCutSize++;
-        }
-    }
-    return newCutSize;
 }
