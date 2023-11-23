@@ -72,6 +72,10 @@ void runGraphAlgoArgs(std::map<std::string, std::vector<std::string>> &args, con
 
                 g = iofile::readFile(filename);
 
+                if (algoName == "exact" && g.size() > 30) {
+                    continue;
+                }
+
                 iofile::writeResultFile(filename, g, algoName);
             }
         }
