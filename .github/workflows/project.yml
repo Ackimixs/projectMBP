@@ -75,7 +75,7 @@ jobs:
       - name: run exact algo
         working-directory: ${{github.workspace}}/build
         run: |
-          ./projectMBP algo exact --debug
+          ./projectMBP algo exact
         shell: bash
 
   run-constructive-algo:
@@ -102,7 +102,7 @@ jobs:
       - name: run constructive algo
         working-directory: ${{github.workspace}}/build
         run: |
-          ./projectMBP algo constructive --debug
+          ./projectMBP algo constructive
         shell: bash
 
   run-local-search-algo:
@@ -129,7 +129,7 @@ jobs:
       - name: run local search algo
         working-directory: ${{github.workspace}}/build
         run: |
-          ./projectMBP algo local_search --debug
+          ./projectMBP algo local_search
         shell: bash
 
   run-tabu-search-algo:
@@ -156,5 +156,5 @@ jobs:
       - name: run tabu search algo
         working-directory: ${{github.workspace}}/build
         run: |
-          ./projectMBP algo tabu_search --debug
+          ./projectMBP algo tabu_search
         shell: bash
