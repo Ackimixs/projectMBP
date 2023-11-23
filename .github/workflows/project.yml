@@ -73,7 +73,7 @@ jobs:
           path: ./instances/exact
 
       - name: list folder
-        working-directory: ${{github.workspaces}}/build
+        working-directory: ${{github.workspace}}/build
         run: |
           ls -al
           ls -al ../
