@@ -215,7 +215,7 @@ ConstructiveHeuristic_V5::dfs(int vertex, const Graph &graph, std::vector<Color>
         }
     }
     color[vertex] = Color::RED;
-    if (res.second.size() < res.first.size()) {
+    if (res.second.size() < graph.size() / 2) {
         res.second.push_back(vertex);
     } else {
         res.first.push_back(vertex);

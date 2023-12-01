@@ -4,7 +4,7 @@ Graph::Graph() : _size(0), _m(0), _adjList(), _successor(), _predecessor(), _adj
     Logger::debug("Creating default graph...", __CONTEXT__);
 }
 
-Graph::Graph(int size) : _size(size), _m(0), _adjList(size), _successor(size), _predecessor(size), _adjMatrix(size, std::vector<int>(size, 0)) {
+Graph::Graph(unsigned long size) : _size(size), _m(0), _adjList(size), _successor(size), _predecessor(size), _adjMatrix(size * size, false) {
     Logger::debug("Creating a directed graph of size " + std::to_string(size), __CONTEXT__);
 }
 
@@ -17,7 +17,7 @@ Graph::~Graph() {
     Logger::debug("Destroying graph...", __CONTEXT__);
 }
 
-int Graph::size() const {
+unsigned int Graph::size() const {
     return _size;
 }
 
@@ -49,8 +49,8 @@ void Graph::addEdge(int from, int to) {
     this->_adjList[to].push_back(from);
     this->_successor[from].push_back(to);
     this->_predecessor[to].push_back(from);
-    this->_adjMatrix[from][to] = 1;
-    this->_adjMatrix[to][from] = 1;
+    this->_adjMatrix[from * _size + to] = true;
+    this->_adjMatrix[to * _size + from] = true;
 }
 
 bool Graph::removeEdge(int from, int to) {
@@ -109,14 +109,14 @@ bool Graph::removeEdge(int from, int to) {
         return false;
     }
 
-    this->_adjMatrix[from][to] = 0;
-    this->_adjMatrix[to][from] = 0;
+    this->_adjMatrix[from * size() + to] = false;
+    this->_adjMatrix[to * size() + from] = false;
 
     return res;
 }
 
 bool Graph::isEdge(int from, int to) const {
-    return this->_adjMatrix[from][to] == 1;
+    return this->_adjMatrix[from * size() + to];
 }
 
 int Graph::degree(int vertex) {
@@ -200,15 +200,14 @@ Graph Graph::createRandomGraph(int numberOfVertices, double edgeProbability) {
         throw std::invalid_argument("Invalid input parameters.");
     }
 
-    // Random number generator (better than rand())
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_real_distribution<double> edgeDist(0.0, 1.0);
+    // Initialize random number generator
+    std::mt19937 rng(static_cast<unsigned>(std::time(nullptr)));
+    std::uniform_real_distribution<double> distribution(0.0, 1.0);
 
     Graph g = Graph(numberOfVertices);
     for (int i = 0; i < numberOfVertices; i++) {
         for (int j = i + 1; j < numberOfVertices; j++) {
-            if (edgeDist(gen) < edgeProbability) {
+            if (distribution(rng) < edgeProbability) {
                 g.addEdge(i, j);
             }
         }

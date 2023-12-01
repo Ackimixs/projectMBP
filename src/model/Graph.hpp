@@ -32,7 +32,8 @@ private:
     std::vector<std::vector<int>> _successor;
     std::vector<std::vector<int>> _predecessor;
 
-    std::vector<std::vector<int>> _adjMatrix;
+//    std::vector<std::vector<int>> _adjMatrix;
+    std::vector<bool> _adjMatrix;
 
     unsigned int _size;
     unsigned int _m;
@@ -47,7 +48,7 @@ protected:
 public:
     Graph();
 
-    Graph(int size);
+    Graph(unsigned long size);
 
     Graph(const Graph& graph);
 
@@ -55,7 +56,7 @@ public:
 
     static Graph createRandomGraph(int numberOfVertices, double edgeProbability = 0.5);
 
-    [[nodiscard]] int size() const;
+    [[nodiscard]] unsigned int size() const;
 
     [[nodiscard]] int m() const;
 

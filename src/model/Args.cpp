@@ -21,8 +21,6 @@ void readArgs(std::map <std::string, std::vector<std::string>> &args) {
 void runGraphAlgoArgs(std::map<std::string, std::vector<std::string>> &args, const std::string& algoName) {
     Graph g;
 
-    // TODO usage : if algoName = "all" then run all algo in the folder instance/<algo_name> and save the result in ./result/<algo_name>
-
     if ((args.find("-i") != args.end() || args.find("--input") != args.end()) && (args.find("-o") != args.end() || args.find("--output") != args.end())) {
         std::vector<std::string> iArgs = args.find("-i") != args.end() ? args["-i"] : args["--input"];
 
@@ -111,7 +109,7 @@ void runGraphRandomArgs(std::map<std::string, std::vector<std::string>> &args) {
         filename = "random_" + std::to_string(n) + "_" + std::to_string(p) + ".in";
     }
 
-    Logger::debug("Generating graph with " + std::to_string(n) + " nodes and " + std::to_string(p) + " probability and save it to : " + filename, __CONTEXT__);
+    Logger::info("Generating graph with " + std::to_string(n) + " nodes and " + std::to_string(p) + " probability and save it to : " + filename, __CONTEXT__);
 
     g = Graph::createRandomGraph(n, p);
     iofile::writeInputFile(filename, g);

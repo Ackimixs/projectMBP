@@ -26,9 +26,9 @@ int main(int argc, char* argv[]) {
 
     Logger::info(LogColor::fgMagenta + "STARTING PROGRAM" + LogColor::reset, __CONTEXT__);
 
-    if (std::string(argv[1]) == "generate") {
+    if (std::string(argv[1]) == "generate" && argc > 1) {
         runGraphRandomArgs(args);
-    } else if (std::string(argv[1]) == "algo") {
+    } else if (std::string(argv[1]) == "algo" && argc > 2) {
         std::string algoName = argv[2];
 
         runGraphAlgoArgs(args, algoName);
@@ -37,12 +37,12 @@ int main(int argc, char* argv[]) {
     // LOCAL TEST
     // TODO REMOVE THIS AT THE END
 
-//    std::string filename = "first_test";
+//    std::string filename = "test1";
 //    std::string filename = "random";
 //    std::string filename = "test";
 
 //    Graph g = iofile::readFile(filename + ".in");
-//    Graph g = Graph::createRandomGraph(1000, .50);
+//    Graph g = Graph::createRandomGraph(100000, .50);
 
 //    iofile::writeResultFile(filename + "_exact.out", g, "exact");
 //    iofile::writeResultFile(filename + "_constructive.out", g, "constructive");

@@ -51,7 +51,7 @@ void iofile::writeResultFile(const std::string& filename, const Graph& g, const 
     // ALGO RUNNER PART
     std::pair<int, Partition> t;
 
-    std::pair<int, Partition> (*algo)(const Graph&) = nullptr;
+    std::pair<int, Partition> (*algo)(const Graph&);
 
     if (algoName == "exact") {
         algo = Exact::exactAlgorithm;

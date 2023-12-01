@@ -25,6 +25,8 @@ namespace Exact_V2 {
     void checkAllPair(const Graph &g, Partition &part, int &partSize, std::vector<int> vector, int n, int start, int k = 2);
 }
 
+// TODO update the V1 to do not stock all the pair but check every time the bisection
+
 /**
  * the good exact algorithm is the second
  */
