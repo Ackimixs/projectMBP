@@ -18,7 +18,7 @@ enum class LogLevel {
 class Logger {
     static LogLevel logLevel;
 
-    static void log(LogLevel level, const std::string &message, const std::string& context) {
+    static void log(const LogLevel level, const std::string& message, const std::string& context) {
         if (level >= logLevel) {
             std::cout << LogColor::bgBlack << LogColor::fgWhite << Utils::getCurrentDateTime() << LogColor::reset << " ";
             std::cout << LogColor::fgWhite << context << LogColor::reset << " ";
@@ -39,17 +39,15 @@ class Logger {
                 case LogLevel::CRITICAL:
                     std::cout << LogColor::fgRed << LogColor::bold;
                     break;
-                default:
-                    std::cout << LogColor::fgBrightGreen;
             }
 
-            std::cout << std::setw(60 - (int(context.size()) - int(enumToString(level).size()))) << enumToString(level) << LogColor::reset << " ";
+            std::cout << std::setw(60 - (static_cast<int>(context.size()) - static_cast<int>(enumToString(level).size()))) << enumToString(level) << LogColor::reset << " ";
 
             std::cout << message << std::endl;
         }
     }
 
-    static std::string enumToString(LogLevel level) {
+    static std::string enumToString(const LogLevel level) {
         switch (level) {
             case LogLevel::DEBUG:
                 return "DEBUG";
@@ -67,8 +65,8 @@ class Logger {
     }
 
 public:
-    static void setLogLevel(LogLevel level) {
-        Logger::logLevel = level;
+    static void setLogLevel(const LogLevel level) {
+        logLevel = level;
     }
 
     static void debug(const std::string &message, const std::string& context) {

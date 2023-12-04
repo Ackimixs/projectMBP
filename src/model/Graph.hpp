@@ -39,11 +39,11 @@ private:
     unsigned int _m;
 
 protected:
-    void BFSVisit(int vertex, std::vector<Color> &color, std::vector<int> &parent, std::vector<int> &res);
+    void BFSVisit(int vertex, std::vector<Color> &color, std::vector<int> &parent, std::vector<int> &res) const;
 
     void DFSVisit(int vertex, std::vector<Color> &color, std::vector<int> &parent, std::vector<int> &res, typeOfOutput type);
 
-    bool isBipartiteVisit(int vertex, std::vector<Color> &color, std::vector<int> &parent, std::vector<Color> &part);
+    bool isBipartiteVisit(int vertex, std::vector<Color> &color, std::vector<int> &parent, std::vector<Color> &part) const;
 
 public:
     Graph();
@@ -58,7 +58,7 @@ public:
 
     [[nodiscard]] unsigned int size() const;
 
-    [[nodiscard]] int m() const;
+    [[nodiscard]] unsigned m() const;
 
     // access to adjList
     std::vector<int> operator[](int vertex) const;
@@ -75,15 +75,15 @@ public:
 
     [[nodiscard]] bool isEdge(int from, int to) const;
 
-    int degree(int vertex);
+    int degree(int vertex) const;
 
-    std::vector<int> BFS(int start = 0);
+    std::vector<int> BFS(int start = 0) const;
 
-    std::vector<int> DFS(int start = 0, typeOfOutput type = typeOfOutput::PREORDER);
+    std::vector<int> DFS(int start = 0, typeOfOutput type = PREORDER);
 
     bool isBipartite();
 
-    void print();
+    void print() const;
 };
 
 int calculateCutSize(const Partition &partition, const Graph &graph);

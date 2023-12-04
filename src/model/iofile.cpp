@@ -118,7 +118,7 @@ void iofile::writeInputFile(const std::string &filename, const Graph &g) {
         outputFile << g.size() << " " << g.m() << "\n";
 
         for (int i = 0; i < g.size(); i++) {
-            for (int j : g.successor(i)) {
+            for (const int j : g.successor(i)) {
                 outputFile << i << " " << j << "  ";
             }
         }

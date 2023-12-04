@@ -1,7 +1,7 @@
 #include "ConstructiveHeuristic.hpp"
 
 std::pair<int, Partition> ConstructiveHeuristic_V1::constructiveHeuristic(const Graph &graph) {
-    int numVertices = graph.size();
+    const int numVertices = graph.size();
 
     if (numVertices % 2 != 0) {
         Logger::error("Number of vertices is not even", __CONTEXT__);
@@ -14,8 +14,8 @@ std::pair<int, Partition> ConstructiveHeuristic_V1::constructiveHeuristic(const 
     int initialCutSize = 0;
 
     for (int i = 1; i < numVertices; ++i) {
-        int edgesToA = ConstructiveHeuristic_Utils:: countEdges(i, part.first, graph);
-        int edgesToB = ConstructiveHeuristic_Utils::countEdges(i, part.second, graph);
+        const int edgesToA = ConstructiveHeuristic_Utils:: countEdges(i, part.first, graph);
+        const int edgesToB = ConstructiveHeuristic_Utils::countEdges(i, part.second, graph);
 
         if (edgesToA > edgesToB || (edgesToA == edgesToB && part.first.size() < part.second.size())) {
             part.first.push_back(i);
@@ -56,11 +56,11 @@ std::pair<int, Partition> ConstructiveHeuristic_V3::constructiveHeuristic(const 
         // Calculate misclassified edges for both partitions
         std::vector<int> newPartition1 = partition1;
         newPartition1.push_back(vertex);
-        int misclassified1 = calculateCutSize(std::make_pair(newPartition1, partition2), graph);
+        const int misclassified1 = calculateCutSize(std::make_pair(newPartition1, partition2), graph);
 
         std::vector<int> newPartition2 = partition2;
         newPartition2.push_back(vertex);
-        int misclassified2 = calculateCutSize(std::make_pair(newPartition2, partition1), graph);
+        const int misclassified2 = calculateCutSize(std::make_pair(newPartition2, partition1), graph);
 
         // Assign vertex to the partition with fewer misclassified edges
         if (misclassified1 < misclassified2) {
@@ -78,8 +78,8 @@ std::pair<int, Partition> ConstructiveHeuristic_V3::constructiveHeuristic(const 
     // Ensure both partitions have the same size
     while (partition1.size() != partition2.size()) {
         int vertex = partition1.size() > partition2.size() ? *partition1.begin() : *partition2.begin();
-        int misclassified1 = calculateCutSize(std::make_pair(partition1, partition2), graph);
-        int misclassified2 = calculateCutSize(std::make_pair(partition2, partition1), graph);
+        const int misclassified1 = calculateCutSize(std::make_pair(partition1, partition2), graph);
+        const int misclassified2 = calculateCutSize(std::make_pair(partition2, partition1), graph);
 
         if (misclassified1 < misclassified2) {
             partition1.erase(std::find(partition1.begin(), partition1.end(), vertex));
@@ -117,7 +117,7 @@ ConstructiveHeuristic_V3::calculateMisclassifiedEdges(const Graph &graph, const 
 
 
 std::pair<int, Partition> ConstructiveHeuristic_V4::constructiveHeuristic(const Graph &graph) {
-    int numVertices = graph.size();
+    const int numVertices = graph.size();
 
     if (numVertices % 2 != 0) {
         Logger::error("Number of vertices is not even", __CONTEXT__);
@@ -143,8 +143,8 @@ std::pair<int, Partition> ConstructiveHeuristic_V4::constructiveHeuristic(const 
         }
         reamingVertices.erase(std::find(reamingVertices.begin(), reamingVertices.end(), vertex));
 
-        int edgesToA = ConstructiveHeuristic_Utils::countEdges(vertex, part.first, graph);
-        int edgesToB = ConstructiveHeuristic_Utils::countEdges(vertex, part.second, graph);
+        const int edgesToA = ConstructiveHeuristic_Utils::countEdges(vertex, part.first, graph);
+        const int edgesToB = ConstructiveHeuristic_Utils::countEdges(vertex, part.second, graph);
 
         if (edgesToA > edgesToB || (edgesToA == edgesToB && part.first.size() < part.second.size())) {
             part.first.push_back(vertex);
@@ -175,7 +175,7 @@ std::pair<int, Partition> ConstructiveHeuristic_V4::constructiveHeuristic(const 
     return make_pair(cutSize, part);
 }
 
-int ConstructiveHeuristic_Utils::countEdges(int vertex, const std::vector<int> &vertexVector, const Graph &graph) {
+int ConstructiveHeuristic_Utils::countEdges(const int vertex, const std::vector<int> &vertexVector, const Graph &graph) {
     int count = 0;
     for (int neighbor : graph[vertex]) {
         if (std::find(vertexVector.begin(), vertexVector.end(), neighbor) != vertexVector.end()) {
@@ -193,10 +193,10 @@ std::pair<int, Partition> ConstructiveHeuristic_V5::constructiveHeuristic(const 
 
     Partition resPart;
 
-    std::vector<Color> color = std::vector<Color>(graph.size(), Color::BLUE);
+    auto color = std::vector(graph.size(), BLUE);
 
     for (int v = 0; v < graph.size(); v++) {
-        if (color[v] == Color::BLUE) {
+        if (color[v] == BLUE) {
             dfs(v, graph, color, resPart);
         }
     }
@@ -207,17 +207,64 @@ std::pair<int, Partition> ConstructiveHeuristic_V5::constructiveHeuristic(const 
 }
 
 void
-ConstructiveHeuristic_V5::dfs(int vertex, const Graph &graph, std::vector<Color> &color, Partition &res) {
-    color[vertex] = Color::WHITE;
-    for (int neighbor : graph[vertex]) {
-        if (color[neighbor] == Color::BLUE) {
+ConstructiveHeuristic_V5::dfs(const int vertex, const Graph &graph, std::vector<Color> &color, Partition &res) {
+    color[vertex] = WHITE;
+    for (const int neighbor : graph[vertex]) {
+        if (color[neighbor] == BLUE) {
             dfs(neighbor, graph, color, res);
         }
     }
-    color[vertex] = Color::RED;
+    color[vertex] = RED;
     if (res.second.size() < graph.size() / 2) {
         res.second.push_back(vertex);
     } else {
         res.first.push_back(vertex);
     }
+}
+
+std::pair<int, Partition> ConstructiveHeuristic_V6::constructiveHeuristic(const Graph& graph) {
+    if (graph.size() % 2 != 0) {
+        Logger::error("Number of vertices is not even", __CONTEXT__);
+        return std::make_pair(-1, std::make_pair(std::vector<int>(), std::vector<int>()));
+    }
+
+    Partition resPart;
+
+    auto color = std::vector(graph.size(), NONE);
+
+    std::vector<std::pair<int, int>> vDeg = std::vector<std::pair<int, int>>(graph.size());
+
+    for (int i = 0; i < graph.size(); i++) {
+        vDeg[i] = std::make_pair(i, graph.degree(i));
+    }
+
+    std::sort(vDeg.begin(), vDeg.end(), [](const std::pair<int, int>& a, const std::pair<int, int>& b) {
+        return a.second > b.second;
+    });
+
+    Color addTo = BLUE;
+
+    for (auto [v, deg] : vDeg) {
+        if (color[v] == NONE) {
+            color[v] = addTo;
+            if (addTo == BLUE && resPart.first.size() < graph.size() / 2) {
+                resPart.first.push_back(v);
+            } else {
+                resPart.second.push_back(v);
+            }
+            for (auto neighbor : graph[v]) {
+                if (color[neighbor] == NONE) {
+                    color[neighbor] = addTo;
+                    if (addTo == BLUE && resPart.first.size() < graph.size() / 2) {
+                        resPart.first.push_back(neighbor);
+                    } else {
+                        resPart.second.push_back(neighbor);
+                    }
+                }
+            }
+            addTo = addTo == BLUE ? RED : BLUE;
+        }
+    }
+
+    return std::make_pair(calculateCutSize(resPart, graph), resPart);
 }

@@ -1,8 +1,49 @@
 #include "Args.hpp"
 
-void readArgs(std::map <std::string, std::vector<std::string>> &args) {
-    if (args.find("-h") != args.end() || args.find("--help") != args.end()) {
-        std::cout << "./ggraph [-a | --algo, -n | --nodes, -v | --version, --debug, -p | --probability, -t | --templates]" << std::endl;
+void readArgs(std::map <std::string, std::vector<std::string>> &args, const int argc, char** argv) {
+
+    if ((args.find("-h") != args.end() || args.find("--help") != args.end()) && argc == 2) {
+        std::cout << "Usage : ./projectMBP [generate | algo] [options]" << std::endl;
+        std::cout << "Graph v" << PROJECT_VERSION << std::endl;
+        std::cout << std::endl;
+        std::cout << "Options:" << std::endl;
+        std::cout << "  -h, --help" << std::endl;
+        std::cout << "  -v, --version" << std::endl;
+        std::cout << "  --debug" << std::endl;
+        exit(EXIT_SUCCESS);
+    }
+
+    if ((args.find("-h") != args.end() || args.find("--help") != args.end()) && argc > 2 && std::string(argv[1]) == "algo") {
+        std::cout << "Usage : ./projectMBP algo <algoName> [options]" << std::endl;
+        std::cout << "Graph v" << PROJECT_VERSION << std::endl;
+        std::cout << std::endl;
+        std::cout << "Algorithms:" << std::endl;
+        std::cout << "  exact (For graph size < MAX_EXACT_GRAPH_SIZE constant)" << std::endl;
+        std::cout << "  constructive" << std::endl;
+        std::cout << "  local_search" << std::endl;
+        std::cout << "  tabu_search" << std::endl;
+        std::cout << "  all (this run every algorithm with graph template that are inside the ./instances/new_instances)" << std::endl;
+        std::cout << std::endl;
+        std::cout << "Options:" << std::endl;
+        std::cout << "  -h, --help" << std::endl;
+        std::cout << "  -v, --version" << std::endl;
+        std::cout << "  --debug" << std::endl;
+        std::cout << "  -i, --input [filename]" << std::endl;
+        std::cout << "  -o, --output [filename]" << std::endl;
+        exit(EXIT_SUCCESS);
+    }
+
+    if ((args.find("-h") != args.end() || args.find("--help") != args.end()) && argc > 2 && std::string(argv[1]) == "generate") {
+        std::cout << "Usage : ./projectMBP generate [options]" << std::endl;
+        std::cout << "Graph v" << PROJECT_VERSION << std::endl;
+        std::cout << std::endl;
+        std::cout << "Options:" << std::endl;
+        std::cout << "  -h, --help" << std::endl;
+        std::cout << "  -v, --version" << std::endl;
+        std::cout << "  --debug" << std::endl;
+        std::cout << "  -n, --nodes [number, int]" << std::endl;
+        std::cout << "  -p, --probability [number, double]" << std::endl;
+        std::cout << "  -o, --output [filename]" << std::endl;
         exit(EXIT_SUCCESS);
     }
 
@@ -44,21 +85,19 @@ void runGraphAlgoArgs(std::map<std::string, std::vector<std::string>> &args, con
 
                 std::string outFilename = "../results/exact/" + entry.path().filename().string();
 
-                if (g.size() < 30) {
+                if (g.size() < MAX_EXACT_GRAPH_SIZE) {
                     iofile::writeResultFile(outFilename, g, "exact");
                 }
 
-                outFilename = "../results/constructive/" + entry.path().filename().string();
+                std::string algoList[] = {"constructive", "local_search", "tabu_search"};
 
-                iofile::writeResultFile(outFilename, g, "constructive");
+                for (const auto &algo : algoList) {
+                    outFilename = "../results/" + algo + "/" + entry.path().filename().string();
 
-                outFilename = "../results/local_search/" + entry.path().filename().string();
+                    outFilename = outFilename.substr(0, outFilename.find_last_of('.')) + ".out";
 
-                iofile::writeResultFile(outFilename, g, "local_search");
-
-                outFilename = "../results/tabu_search/" + entry.path().filename().string();
-
-                iofile::writeResultFile(outFilename, g, "tabu_search");
+                    iofile::writeResultFile(outFilename, g, algo);
+                }
             }
         } else {
             for (const auto &entry : std::filesystem::directory_iterator("../instances/" + algoName)) {
@@ -66,35 +105,36 @@ void runGraphAlgoArgs(std::map<std::string, std::vector<std::string>> &args, con
 
                 std::string outFilename = "../results/" + algoName + "/" + entry.path().filename().string();
 
+                outFilename = outFilename.substr(0, outFilename.find_last_of('.')) + ".out";
+
                 Logger::debug("Reading file : " + filename, __CONTEXT__);
 
                 g = iofile::readFile(filename);
 
-                if (algoName == "exact" && g.size() > 30) {
+                if (algoName == "exact" && g.size() > MAX_EXACT_GRAPH_SIZE) {
                     continue;
                 }
 
-                iofile::writeResultFile(filename, g, algoName);
+                iofile::writeResultFile(outFilename, g, algoName);
             }
         }
     }
 }
 
 void runGraphRandomArgs(std::map<std::string, std::vector<std::string>> &args) {
-
     int n = 1000;
     double p = .5;
 
     Graph g;
 
     if (args.find("-n") != args.end() || args.find("--nodes") != args.end()) {
-        std::vector<std::string> nArgs = args.find("-n") != args.end() ? args["-n"] : args["--nodes"];
+        const std::vector<std::string> nArgs = args.find("-n") != args.end() ? args["-n"] : args["--nodes"];
 
         n = std::stoi(nArgs[0]);
     }
 
     if (args.find("-p") != args.end() || args.find("--probability") != args.end()) {
-        std::vector<std::string> pArgs = args.find("-p") != args.end() ? args["-p"] : args["--probability"];
+        const std::vector<std::string> pArgs = args.find("-p") != args.end() ? args["-p"] : args["--probability"];
 
         p = std::stod(pArgs[0]);
     }
@@ -102,7 +142,7 @@ void runGraphRandomArgs(std::map<std::string, std::vector<std::string>> &args) {
     std::string filename;
 
     if (args.find("-o") != args.end() || args.find("--output") != args.end()) {
-        std::vector<std::string> fArgs = args.find("-o") != args.end() ? args["-o"] : args["--output"];
+        const std::vector<std::string> fArgs = args.find("-o") != args.end() ? args["-o"] : args["--output"];
 
         filename = fArgs[0];
     } else {

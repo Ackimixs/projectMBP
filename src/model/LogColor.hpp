@@ -60,7 +60,7 @@ namespace LogColor {
     public:
         Modifier() {}
 
-        Modifier& operator<<(Code code) {
+        Modifier& operator<<(const Code code) {
             codes.push_back(code);
             return *this;
         }

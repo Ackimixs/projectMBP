@@ -9,3 +9,5 @@
 #define PROJECT_VERSION "1.0.0"
 
 #define MAX_ITERATION 20
+
+#define MAX_EXACT_GRAPH_SIZE 25

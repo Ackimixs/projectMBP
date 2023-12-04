@@ -1,15 +1,15 @@
 #include "Graph.hpp"
 
-Graph::Graph() : _size(0), _m(0), _adjList(), _successor(), _predecessor(), _adjMatrix() {
+Graph::Graph() : _size(0), _m(0) {
     Logger::debug("Creating default graph...", __CONTEXT__);
 }
 
-Graph::Graph(unsigned long size) : _size(size), _m(0), _adjList(size), _successor(size), _predecessor(size), _adjMatrix(size * size, false) {
+Graph::Graph(const unsigned long size) : _adjList(size), _successor(size), _predecessor(size), _adjMatrix(size * size, false), _size(size), _m(0) {
     Logger::debug("Creating a directed graph of size " + std::to_string(size), __CONTEXT__);
 }
 
-Graph::Graph(const Graph &graph) : _size(graph._size), _m(graph._m), _adjList(graph._adjList), _successor(graph._successor),
-                                   _predecessor(graph._predecessor), _adjMatrix(graph._adjMatrix) {
+Graph::Graph(const Graph &graph) : _adjList(graph._adjList), _successor(graph._successor), _predecessor(graph._predecessor), _adjMatrix(graph._adjMatrix),
+                                   _size(graph._size), _m(graph._m) {
     Logger::debug("Creating a copy of a graph...", __CONTEXT__);
 }
 
@@ -21,23 +21,23 @@ unsigned int Graph::size() const {
     return _size;
 }
 
-int Graph::m() const {
+unsigned Graph::m() const {
     return _m;
 }
 
-std::vector<int> Graph::operator[](int vertex) const {
+std::vector<int> Graph::operator[](const int vertex) const {
     return this->_adjList[vertex];
 }
 
-std::vector<int> Graph::successor(int vertex) const {
+std::vector<int> Graph::successor(const int vertex) const {
     return this->_successor[vertex];
 }
 
-std::vector<int> Graph::predecessor(int vertex) const {
+std::vector<int> Graph::predecessor(const int vertex) const {
     return this->_predecessor[vertex];
 }
 
-void Graph::addEdge(int from, int to) {
+void Graph::addEdge(const int from, const int to) {
     if (from < 0 || from > this->size() - 1) {
         throw std::invalid_argument("'from' need to be between 0 and the _size of the graph - 1");
     } else if (to < 0 || to > this->size() - 1) {
@@ -53,7 +53,7 @@ void Graph::addEdge(int from, int to) {
     this->_adjMatrix[to * _size + from] = true;
 }
 
-bool Graph::removeEdge(int from, int to) {
+bool Graph::removeEdge(const int from, const int to) {
     Logger::debug("Removing edge " + std::to_string(from) + " -> " + std::to_string(to), __CONTEXT__);
     if (from < 0 || from > this->size() - 1) {
         throw std::invalid_argument("'from' need to be between 0 and the _size of the graph - 1");
@@ -115,24 +115,24 @@ bool Graph::removeEdge(int from, int to) {
     return res;
 }
 
-bool Graph::isEdge(int from, int to) const {
+bool Graph::isEdge(const int from, const int to) const {
     return this->_adjMatrix[from * size() + to];
 }
 
-int Graph::degree(int vertex) {
-    return int(this->_adjList[vertex].size());
+int Graph::degree(const int vertex) const {
+    return static_cast<int>(this->_adjList[vertex].size());
 }
 
-std::vector<int> Graph::BFS(int start) {
+std::vector<int> Graph::BFS(const int start) const {
     Logger::debug("BFS algorithm starting...", __CONTEXT__);
 
-    std::vector<Color> color = std::vector<Color>(this->size(), Color::BLUE);
-    std::vector<int> parent = std::vector<int>(this->size(), -1);
+    auto color = std::vector(this->size(), BLUE);
+    auto parent = std::vector(this->size(), -1);
     std::vector<int> res;
 
     this->BFSVisit(start, color, parent, res);
     for (int v = 0; v < this->size(); v++) {
-        if (color[v] == Color::BLUE) {
+        if (color[v] == BLUE) {
             this->BFSVisit(v, color, parent, res);
         }
     }
@@ -140,60 +140,60 @@ std::vector<int> Graph::BFS(int start) {
     return res;
 }
 
-void Graph::BFSVisit(int vertex, std::vector<Color> &color, std::vector<int> &parent, std::vector<int> &res) {
+void Graph::BFSVisit(const int vertex, std::vector<Color> &color, std::vector<int> &parent, std::vector<int> &res) const {
     std::queue<int> q;
-    color[vertex] = Color::WHITE;
+    color[vertex] = WHITE;
     q.push(vertex);
     while (!q.empty()) {
         int w = q.front();
         q.pop();
         for (int z : this->_adjList[w]) {
-            if (color[z] == Color::BLUE) {
-                color[z] = Color::WHITE;
+            if (color[z] == BLUE) {
+                color[z] = WHITE;
                 parent[z] = w;
                 q.push(z);
             }
         }
-        color[w] = Color::RED;
+        color[w] = RED;
         res.push_back(w);
     }
 }
 
-std::vector<int> Graph::DFS(int start, typeOfOutput type) {
+std::vector<int> Graph::DFS(const int start, const typeOfOutput type) {
     Logger::debug("DFS algorithm starting...", __CONTEXT__);
 
-    std::vector<Color> color = std::vector<Color>(this->size(), Color::BLUE);
-    std::vector<int> parent = std::vector<int>(this->size(), -1);
+    auto color = std::vector(this->size(), BLUE);
+    auto parent = std::vector(this->size(), -1);
     std::vector<int> res;
 
     this->DFSVisit(start, color, parent, res, type);
     for (int v = 0; v < this->size(); v++) {
-        if (color[v] == Color::BLUE) {
+        if (color[v] == BLUE) {
             this->DFSVisit(v, color, parent, res, type);
         }
     }
     return res;
 }
 
-void Graph::DFSVisit(int vertex, std::vector<Color> &color, std::vector<int> &parent, std::vector<int> &res,
-                     typeOfOutput type) {
-    color[vertex] = Color::WHITE;
-    if (type == typeOfOutput::PREORDER) {
+void Graph::DFSVisit(const int vertex, std::vector<Color> &color, std::vector<int> &parent, std::vector<int> &res,
+                     const typeOfOutput type) {
+    color[vertex] = WHITE;
+    if (type == PREORDER) {
         res.push_back(vertex);
     }
-    for (int w : this->_adjList[vertex]) {
-        if (color[w] == Color::BLUE) {
+    for (const int w : this->_adjList[vertex]) {
+        if (color[w] == BLUE) {
             parent[w] = vertex;
             this->DFSVisit(w, color, parent, res, type);
         }
     }
-    color[vertex] = Color::RED;
-    if (type == typeOfOutput::POSTORDER) {
+    color[vertex] = RED;
+    if (type == POSTORDER) {
         res.push_back(vertex);
     }
 }
 
-Graph Graph::createRandomGraph(int numberOfVertices, double edgeProbability) {
+Graph Graph::createRandomGraph(const int numberOfVertices, const double edgeProbability) {
     Logger::debug("Creating random graph with " + std::to_string(numberOfVertices) + " vertices and edge probability " + std::to_string(edgeProbability) + "...", __CONTEXT__);
 
     if (numberOfVertices <= 0 || edgeProbability < 0.0 || edgeProbability > 1.0) {
@@ -202,9 +202,9 @@ Graph Graph::createRandomGraph(int numberOfVertices, double edgeProbability) {
 
     // Initialize random number generator
     std::mt19937 rng(static_cast<unsigned>(std::time(nullptr)));
-    std::uniform_real_distribution<double> distribution(0.0, 1.0);
+    std::uniform_real_distribution distribution(0.0, 1.0);
 
-    Graph g = Graph(numberOfVertices);
+    auto g = Graph(numberOfVertices);
     for (int i = 0; i < numberOfVertices; i++) {
         for (int j = i + 1; j < numberOfVertices; j++) {
             if (distribution(rng) < edgeProbability) {
@@ -218,12 +218,12 @@ Graph Graph::createRandomGraph(int numberOfVertices, double edgeProbability) {
     return g;
 }
 
-void Graph::print() {
+void Graph::print() const {
     Logger::debug("Printing graph...", __CONTEXT__);
 
     for (int i = 0; i < this->size(); i++) {
         std::cout << i << " -> ";
-        for (int j : this->_adjList[i]) {
+        for (const int j : this->_adjList[i]) {
             std::cout << j << " ";
         }
         std::cout << std::endl;
@@ -232,14 +232,14 @@ void Graph::print() {
 
 bool Graph::isBipartite() {
     Logger::debug("Bipartite algorithm starting...", __CONTEXT__);
-    std::vector<Color> color = std::vector<Color>(this->size(), Color::BLUE);
-    std::vector<Color> partie = std::vector<Color>(this->size(), Color::NONE);
-    std::vector<int> parent = std::vector<int>(this->size(), -1);
+    auto color = std::vector(this->size(), BLUE);
+    auto partie = std::vector(this->size(), NONE);
+    auto parent = std::vector(this->size(), -1);
 
     for (int v = 0; v < this->size(); v++) {
-        if (color[v] == Color::BLUE) {
-            partie[v] = Color::BLUE;
-            bool res = this->isBipartiteVisit(v, color, parent, partie);
+        if (color[v] == BLUE) {
+            partie[v] = BLUE;
+            const bool res = this->isBipartiteVisit(v, color, parent, partie);
             if (!res) {
                 return false;
             }
@@ -249,18 +249,18 @@ bool Graph::isBipartite() {
 }
 
 bool
-Graph::isBipartiteVisit(int vertex, std::vector<Color> &color, std::vector<int> &parent, std::vector<Color> &part) {
+Graph::isBipartiteVisit(const int vertex, std::vector<Color> &color, std::vector<int> &parent, std::vector<Color> &part) const {
     std::queue<int> q;
-    color[vertex] = Color::WHITE;
+    color[vertex] = WHITE;
     q.push(vertex);
     while (!q.empty()) {
-        int w = q.front();
+        const int w = q.front();
         q.pop();
-        Color nextColor = part[w] == Color::BLUE ? Color::RED : Color::BLUE;
+        const Color nextColor = part[w] == BLUE ? RED : BLUE;
         for (int z : this->_adjList[w]) {
 
             // PART TO CHECK IF THE GRAPH IS BIPARTITE
-            if (part[z] != Color::NONE) {
+            if (part[z] != NONE) {
                 if (part[z] == part[w]) {
                     return false;
                 }
@@ -268,13 +268,13 @@ Graph::isBipartiteVisit(int vertex, std::vector<Color> &color, std::vector<int> 
                 part[z] = nextColor;
             }
 
-            if (color[z] == Color::BLUE) {
-                color[z] = Color::WHITE;
+            if (color[z] == BLUE) {
+                color[z] = WHITE;
                 parent[z] = w;
                 q.push(z);
             }
         }
-        color[w] = Color::RED;
+        color[w] = RED;
     }
     return true;
 }
@@ -282,8 +282,8 @@ Graph::isBipartiteVisit(int vertex, std::vector<Color> &color, std::vector<int> 
 int calculateCutSize(const Partition &partition, const Graph &graph) {
     int cutSize = 0;
 
-    for (int i : partition.first) {
-        for (int j : partition.second) {
+    for (const int i : partition.first) {
+        for (const int j : partition.second) {
             if (graph.isEdge(i, j)) {
                 cutSize++;
             }

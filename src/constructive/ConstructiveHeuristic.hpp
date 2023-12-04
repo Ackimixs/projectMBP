@@ -4,8 +4,9 @@
 
 #include <unordered_set>
 
+// TODO did a constructive heuristic with the degree of the vertex because dfs work but we do not know why
+
 /**
- * LETS FUCKING GO
  * Work fine for a minimum size of edge
  * With 1000 vertex and 10000 edge that work well but
  * when 1000 vertex and 100000 edge that do not work partition size (40 -- 960)
@@ -40,7 +41,7 @@ namespace ConstructiveHeuristic_Utils {
 
 /**
  * idea : dfs
- * result : so fucking good
+ * result : so fucking good but idk why
  */
 namespace ConstructiveHeuristic_V5 {
     std::pair<int, Partition> constructiveHeuristic(const Graph& graph);
@@ -49,6 +50,15 @@ namespace ConstructiveHeuristic_V5 {
 }
 
 /**
- * the good constructive heuristic is the first
+ * degrees
+ * idea : create a vector with a vectex and it degrees, sort it in descending by degrees
+*/
+namespace ConstructiveHeuristic_V6 {
+    std::pair<int, Partition> constructiveHeuristic(const Graph& graph);
+}
+
+
+/**
+ * the good constructive heuristic
  */
 namespace ConstructiveHeuristic = ConstructiveHeuristic_V5;

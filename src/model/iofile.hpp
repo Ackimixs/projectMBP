@@ -12,4 +12,5 @@ namespace iofile {
     void writeResultFile(const std::string& filename, const Graph& g, const std::string& algoName);
 
     void writeInputFile(const std::string& filename, const Graph& g);
+
 }

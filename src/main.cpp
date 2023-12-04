@@ -22,14 +22,14 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    readArgs(args);
+    readArgs(args, argc, argv);
 
     Logger::info(LogColor::fgMagenta + "STARTING PROGRAM" + LogColor::reset, __CONTEXT__);
 
-    if (std::string(argv[1]) == "generate" && argc > 1) {
+    if (argc > 1 && std::string(argv[1]) == "generate") {
         runGraphRandomArgs(args);
-    } else if (std::string(argv[1]) == "algo" && argc > 2) {
-        std::string algoName = argv[2];
+    } else if (argc > 2 && std::string(argv[1]) == "algo") {
+        const std::string algoName = argv[2];
 
         runGraphAlgoArgs(args, algoName);
     }
@@ -42,7 +42,7 @@ int main(int argc, char* argv[]) {
 //    std::string filename = "test";
 
 //    Graph g = iofile::readFile(filename + ".in");
-//    Graph g = Graph::createRandomGraph(100000, .50);
+//    Graph g = Graph::createRandomGraph(100, .50);
 
 //    iofile::writeResultFile(filename + "_exact.out", g, "exact");
 //    iofile::writeResultFile(filename + "_constructive.out", g, "constructive");
@@ -52,7 +52,6 @@ int main(int argc, char* argv[]) {
 //    iofile::writeResultFile(filename + "_local_search_V3.out", g, "local_search_V3");
 //    iofile::writeResultFile(filename + "_tabu_search.out", g, "tabu_search");
 //    iofile::writeInputFile(filename + ".in", g);
-
 
     Logger::info(LogColor::fgMagenta + "PROGRAM ENDED" + LogColor::reset, __CONTEXT__);
 

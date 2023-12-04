@@ -21,8 +21,8 @@ std::pair<int, Partition> Exact_V1::exactAlgorithm(const Graph& g) {
 
         int numberOfVertex = 0;
 
-        for (int k : set1) {
-            for (int l : set2) {
+        for (const int k : set1) {
+            for (const int l : set2) {
                 if (g.isEdge(k, l)) {
                     numberOfVertex++;
                 }
@@ -63,7 +63,7 @@ std::vector<std::vector<int>> Exact_V1::getAllPair(int n) {
         return result;
     }
 
-    int k = n / 2;
+    const int k = n / 2;
 
     std::vector<int> currentCombination;
 
@@ -101,8 +101,8 @@ void Exact_V2::checkAllPair(const Graph &g, Partition &part, int &partSize, std:
         }
 
         int numberOfVertex = 0;
-        for (int m : vector) {
-            for (int l : oppositeSet) {
+        for (const int m : vector) {
+            for (const int l : oppositeSet) {
                 if (g.isEdge(m, l)) {
                     numberOfVertex++;
                 }
@@ -145,8 +145,8 @@ bool Exact_V2::checkPartition(const Graph &g, int &partSize, std::vector<int> ve
     }
 
     int numberOfVertex = 0;
-    for (int k : vec) {
-        for (int l : oppositeSet) {
+    for (const int k : vec) {
+        for (const int l : oppositeSet) {
             if (g.isEdge(k, l)) {
                 numberOfVertex++;
             }
