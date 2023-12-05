@@ -19,16 +19,15 @@ std::pair<int, Partition> LocalSearch_V1::localSearch(const Graph &g) {
     while (cutSize < beforeCutSize) {
         beforeCutSize = cutSize;
         for (int k = 0; k < newPartition.first.size(); k++) {
-            std::swap(newPartition.first[k], newPartition.second[k]);
 
             const int newCutSize = LocalSearch_Utils::optimizeCalculateCutSize(newPartition, g, k, k, cutSize);
 
             if (newCutSize < cutSize) {
                 Logger::debug("Find better solution : " + std::to_string(newCutSize) + " !", __CONTEXT__);
+  
+                std::swap(newPartition.first[k], newPartition.second[k]);
 
                 cutSize = newCutSize;
-            } else {
-                std::swap(newPartition.first[k], newPartition.second[k]);
             }
         }
 
@@ -72,16 +71,14 @@ std::pair<int, Partition> LocalSearch_V2::localSearch(const Graph &g) {
 
         for (int k = 0; k < newPartition.first.size(); k++) {
             for (int i = 0; i < newPartition.second.size(); i++) {
-                std::swap(newPartition.first[k], newPartition.second[i]);
-
                 const int newCutSize = LocalSearch_Utils::optimizeCalculateCutSize(newPartition, g, k, i, cutSize);
 
                 if (newCutSize < cutSize) {
                     Logger::debug("Find better solution : " + std::to_string(newCutSize) + " !", __CONTEXT__);
 
-                    cutSize = newCutSize;
-                } else {
                     std::swap(newPartition.first[k], newPartition.second[i]);
+
+                    cutSize = newCutSize;
                 }
             }
         }
