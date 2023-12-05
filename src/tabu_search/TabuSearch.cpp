@@ -123,8 +123,7 @@ std::pair<int, Partition> TabuSearch_V2::tabuSearch(const Graph &g) {
 
 bool TabuSearch_V2::isTabuMove(const std::vector<TabuMove>& tabuList, Partition& move) {
     std::sort(move.first.begin(), move.first.end());
-    std::sort(move.second.begin(), move.second.end());
-    return std::any_of(tabuList.begin(), tabuList.end(), [&move](const TabuMove& m) { return m.move == move; });
+    return std::any_of(tabuList.begin(), tabuList.end(), [&move](const TabuMove& m) { return m.move.first == move.first; });
 }
 
 void
