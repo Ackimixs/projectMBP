@@ -3,7 +3,7 @@
 #include "Algorithm.hpp"
 
 #include <fstream>
-#include <sstream>
+#include <ostream>
 
 namespace iofile {
 

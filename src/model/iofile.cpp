@@ -148,11 +148,11 @@ void iofile::testAlgo(const std::string& algoName) {
     } else if (algoName == "local_search") {
         algo = LocalSearch::localSearch;
 
-        size = {10, 20, 30, 40, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000};
+        size = {10, 20, 30, 40, 50, 100, 200, 300, 400, 500};
     } else if (algoName == "tabu_search") {
         algo = TabuSearch::tabuSearch;
 
-        size = {10, 20, 30, 40, 50, 100, 200, 300, 400, 500, 600};
+        size = {10, 20, 30, 40, 50, 100, 200, 300, 400, 500};
     } else {
         Logger::error("No algo named : " + algoName, __CONTEXT__);
         exit(EXIT_FAILURE);
@@ -177,11 +177,13 @@ void iofile::testAlgo(const std::string& algoName) {
 
                 std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 
-                auto time = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin).count();
+                auto micros = std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count();
 
-                Logger::info(LogColor::fgRed + algoName + LogColor::reset + " algorithm result : " + LogColor::fgBrightRed + std::to_string(part.first) + LogColor::reset + " vertex between the two sets", __CONTEXT__);
+                auto sec = std::chrono::duration_cast<std::chrono::seconds>(end - begin).count();
 
-                totalTime += time;
+                Logger::info(LogColor::fgRed + algoName + LogColor::reset + " algorithm result : " + LogColor::fgBrightRed + std::to_string(part.first) + LogColor::reset + " vertex between the two sets. the Algorithm took " + std::to_string(micros) + " micro s = " + std::to_string(sec) + " s", __CONTEXT__);
+
+                totalTime += micros;
 
             }
 
