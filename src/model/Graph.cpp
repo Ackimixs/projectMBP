@@ -5,7 +5,7 @@ Graph::Graph() : _size(0), _m(0) {
 }
 
 Graph::Graph(const unsigned long size) : _adjList(size), _successor(size), _predecessor(size), _adjMatrix(size * size, false), _size(size), _m(0) {
-    Logger::debug("Creating a directed graph of size " + std::to_string(size), __CONTEXT__);
+    Logger::debug("Creating a undirected graph of size " + std::to_string(size), __CONTEXT__);
 }
 
 Graph::Graph(const Graph &graph) : _adjList(graph._adjList), _successor(graph._successor), _predecessor(graph._predecessor), _adjMatrix(graph._adjMatrix),
