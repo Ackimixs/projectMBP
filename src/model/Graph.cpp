@@ -21,7 +21,7 @@ unsigned int Graph::size() const {
     return _size;
 }
 
-unsigned Graph::m() const {
+unsigned int Graph::m() const {
     return _m;
 }
 

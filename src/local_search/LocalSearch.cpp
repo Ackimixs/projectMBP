@@ -156,7 +156,7 @@ LocalSearch_Utils::optimizeCalculateCutSize(const std::pair<std::vector<int>, st
     const int firstVertex = partition.first[firstIndex];
     const int secondVertex = partition.second[secondIndex];
 
-    for (const auto v : partition.second) {
+    for (const int v : partition.second) {
         if (v == firstVertex || v == secondVertex) {
             continue;
         }
@@ -170,7 +170,7 @@ LocalSearch_Utils::optimizeCalculateCutSize(const std::pair<std::vector<int>, st
         }
     }
 
-    for (const auto v : partition.first) {
+    for (const int v : partition.first) {
         if (v == firstVertex || v == secondVertex) {
             continue;
         }
@@ -193,36 +193,42 @@ std::pair<int, Partition> LocalSearch_V4::localSearch(const Graph &g) {
         exit(EXIT_FAILURE);
     }
 
-    std::pair<int, Partition> initialSolutionSet = ConstructiveHeuristic::constructiveHeuristic(g);
+    auto [fst, snd] = ConstructiveHeuristic::constructiveHeuristic(g);
 
-    Logger::debug("Local search - solution find by constructive heuristic : " + std::to_string(initialSolutionSet.first), __CONTEXT__);
+    Logger::debug("Local search - solution find by constructive heuristic : " + std::to_string(fst), __CONTEXT__);
 
-    Partition newPartition = initialSolutionSet.second;
+    Partition newPartition = snd;
 
-    int cutSize = initialSolutionSet.first;
+    int cutSize = fst, candidateCutSize = fst;
 
-    int candidateCutSize = cutSize;
+    struct {
+        int first;
+        int second;
+    } candidate_indexes{};
 
-    std::pair<int, int> candidateIndexes;
-
-    int maxIteration = 0;
+    int iterations = 0;
+    unsigned int maxIterations = g.size();
 
     bool improvement = true;
 
-    while (improvement) {
+    while (iterations < maxIterations && improvement) {
         improvement = false;
 
         // Make an iteration to every vertex and get the best
+        // sooooooooooo fucking long
         for (int i = 0; i < newPartition.first.size(); i++) {
             for (int k = 0; k < newPartition.second.size(); k++) {
+
                 const int newCutSize = LocalSearch_Utils::optimizeCalculateCutSize(newPartition, g, i, k, cutSize);
+                // 100 ms
 
                 if (newCutSize < candidateCutSize) {
-                    Logger::debug("Find better solution : " + std::to_string(newCutSize) + " !", __CONTEXT__);
+                    // Logger::debug("Find better solution : " + std::to_string(newCutSize) + " !", __CONTEXT__);
 
                     improvement = true;
 
-                    candidateIndexes = std::make_pair(i, k);
+                    candidate_indexes.first = i;
+                    candidate_indexes.second = k;
 
                     candidateCutSize = newCutSize;
                 }
@@ -230,25 +236,17 @@ std::pair<int, Partition> LocalSearch_V4::localSearch(const Graph &g) {
         }
 
         if (improvement) {
-            std::swap(newPartition.first[candidateIndexes.first], newPartition.second[candidateIndexes.second]);
+            std::swap(newPartition.first[candidate_indexes.first], newPartition.second[candidate_indexes.second]);
             cutSize = candidateCutSize;
         }
 
-        maxIteration++;
-        Logger::debug(LogColor::bgRed + "Iteration : " + std::to_string(maxIteration) + LogColor::reset, __CONTEXT__);
-
-        if (maxIteration == 500) {
-            // maxIteration will break the loop
-            Logger::debug("LocalSearch algorithm max iteration reached", __CONTEXT__);
-            break;
-        }
+        iterations++;
+        Logger::debug(LogColor::bgRed + "Iteration : " + std::to_string(iterations) + LogColor::reset, __CONTEXT__);
     }
 
-    initialSolutionSet.second = newPartition;
+    Logger::debug("Cut size difference : " + std::to_string(fst - cutSize), __CONTEXT__);
 
-    initialSolutionSet.first = cutSize;
-
-    return initialSolutionSet;
+    return std::make_pair(cutSize, newPartition);
 }
 
 std::pair<int, Partition> LocalSearch_V5::localSearch(const Graph &g) {
@@ -299,7 +297,7 @@ std::pair<int, Partition> LocalSearch_V5::localSearch(const Graph &g) {
         maxIteration++;
         Logger::debug(LogColor::bgRed + "Iteration : " + std::to_string(maxIteration) + LogColor::reset, __CONTEXT__);
 
-        if (maxIteration == 500) {
+        if (maxIteration == MAX_ITERATION) {
             // maxIteration will break the loop
             Logger::debug("LocalSearch algorithm max iteration reached", __CONTEXT__);
             break;

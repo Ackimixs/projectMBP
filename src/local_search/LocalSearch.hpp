@@ -50,11 +50,6 @@ namespace LocalSearch_V5 {
 namespace LocalSearch_Utils {
     /**
      * \brief calculate the cut size of the partition for a swap (before it)
-     * \param partition
-     * \param graph
-     * \param firstIndex
-     * \param secondIndex
-     * \param actualCutSize
      * \return
      */
     int optimizeCalculateCutSize(const std::pair<std::vector<int>, std::vector<int>>& partition, const Graph &graph, int firstIndex, int secondIndex,
@@ -64,4 +59,4 @@ namespace LocalSearch_Utils {
 /**
  * the good local search is the first
  */
-namespace LocalSearch = LocalSearch_V3;
+namespace LocalSearch = LocalSearch_V4;

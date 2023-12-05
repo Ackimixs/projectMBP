@@ -90,7 +90,7 @@ std::pair<int, Partition> Exact_V2::exactAlgorithm(const Graph &g) {
 
 void Exact_V2::checkAllPair(const Graph &g, Partition &part, int &partSize, std::vector<int> vector, int n, int start, int k) {
 
-    if (vector.size() == g.size() / 2) {
+    if (vector.size() == (g.size() / 2)) {
 
         std::vector<int> oppositeSet;
 
@@ -114,8 +114,6 @@ void Exact_V2::checkAllPair(const Graph &g, Partition &part, int &partSize, std:
 
             partSize = calculateCutSize(part, g);
         }
-
-        return;
     }
 
     else {

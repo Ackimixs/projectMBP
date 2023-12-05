@@ -32,6 +32,10 @@ int main(int argc, char* argv[]) {
         const std::string algoName = argv[2];
 
         runGraphAlgoArgs(args, algoName);
+    } else if (argc > 2 && std::string(argv[1]) == "test") {
+        const std::string algoName = argv[2];
+
+        runGraphTestAlgo(args, algoName);
     }
 
     // LOCAL TEST

@@ -72,11 +72,11 @@ void iofile::writeResultFile(const std::string& filename, const Graph& g, const 
 
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 
-    auto time = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
+    auto time = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin).count();
 
     Logger::info(LogColor::fgRed + algoName + LogColor::reset + " algorithm result : " + LogColor::fgBrightRed + std::to_string(t.first) + LogColor::reset + " vertex between the two sets", __CONTEXT__);
 
-    Logger::info("Time taken by " + LogColor::fgRed + algoName + LogColor::reset + " algorithm is : " + LogColor::fgBrightRed + std::to_string(time) + LogColor::reset + " ms", __CONTEXT__);
+    Logger::info("Time taken by " + LogColor::fgRed + algoName + LogColor::reset + " algorithm is : " + LogColor::fgBrightRed + std::to_string(time) + LogColor::reset + " ns", __CONTEXT__);
 
     std::ofstream outputFile(filename);
 
@@ -127,4 +127,70 @@ void iofile::writeInputFile(const std::string &filename, const Graph &g) {
         Logger::error("Unable to open file " + filename, __CONTEXT__);
         exit(EXIT_FAILURE);
     }
+}
+
+void iofile::testAlgo(const std::string& algoName) {
+
+    std::pair<int, Partition> (*algo)(const Graph&);
+
+    int prob[] = {25, 50, 75};
+
+    std::vector<int> size;
+
+    if (algoName == "exact") {
+        algo = Exact::exactAlgorithm;
+
+        size = {6, 10, 12, 16, 20, 22, 24, 26};
+    } else if (algoName == "constructive") {
+        algo = ConstructiveHeuristic::constructiveHeuristic;
+
+        size = {10, 20, 30, 40, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000};
+    } else if (algoName == "local_search") {
+        algo = LocalSearch::localSearch;
+
+        size = {10, 20, 30, 40, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000};
+    } else if (algoName == "tabu_search") {
+        algo = TabuSearch::tabuSearch;
+
+        size = {10, 20, 30, 40, 50, 100, 200, 300, 400, 500, 600};
+    } else {
+        Logger::error("No algo named : " + algoName, __CONTEXT__);
+        exit(EXIT_FAILURE);
+    }
+
+    for (int p : prob) {
+
+        std::ofstream outputFile("../report/data/" + algoName + "_" + std::to_string(p) + ".dat");
+
+        for (int i : size) {
+
+            long totalTime = 0;
+
+            for (int k = 0; k < 5; k++) {
+                Graph g = Graph::createRandomGraph(i, p / 100.0);
+
+                std::pair<int, Partition> part;
+
+                std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+
+                part = algo(g);
+
+                std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+
+                auto time = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin).count();
+
+                Logger::info(LogColor::fgRed + algoName + LogColor::reset + " algorithm result : " + LogColor::fgBrightRed + std::to_string(part.first) + LogColor::reset + " vertex between the two sets", __CONTEXT__);
+
+                totalTime += time;
+
+            }
+
+            totalTime /= 10;
+
+            outputFile << i << " " << totalTime << "\n";
+        }
+
+        outputFile.close();
+    }
+
 }

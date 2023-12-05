@@ -58,7 +58,7 @@ public:
 
     [[nodiscard]] unsigned int size() const;
 
-    [[nodiscard]] unsigned m() const;
+    [[nodiscard]] unsigned int m() const;
 
     // access to adjList
     std::vector<int> operator[](int vertex) const;

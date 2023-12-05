@@ -155,3 +155,9 @@ void runGraphRandomArgs(std::map<std::string, std::vector<std::string>> &args) {
 
     iofile::writeInputFile(filename, g);
 }
+
+void runGraphTestAlgo(std::map<std::string, std::vector<std::string>>& args, const std::string& algoName) {
+
+    iofile::testAlgo(algoName);
+
+}

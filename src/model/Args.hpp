@@ -9,3 +9,5 @@ void readArgs(std::map <std::string, std::vector<std::string>> &args, int argc, 
 void runGraphAlgoArgs(std::map<std::string, std::vector<std::string>> &args, const std::string& algoName);
 
 void runGraphRandomArgs(std::map<std::string, std::vector<std::string>> &args);
+
+void runGraphTestAlgo(std::map<std::string, std::vector<std::string>> &args, const std::string& algoName);

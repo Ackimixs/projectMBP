@@ -11,3 +11,6 @@ do
     $EXECUTABLE generate -n $SIZE -p .$PROB -o ./"$1"/graph_gen/random_${SIZE}_${PROB}.in --debug
   done
 done
+
+# head -n -1 ../src/model/Constants.hpp > temp && mv temp ../src/model/Constants.hpp
+# echo "#define NO_LOG" >> ../src/model/Constants.hpp

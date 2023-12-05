@@ -252,6 +252,7 @@ std::pair<int, Partition> ConstructiveHeuristic_V6::constructiveHeuristic(const 
             } else {
                 resPart.second.push_back(v);
             }
+            // TODO add a good criteria that take the neighbor
             for (auto neighbor : graph[v]) {
                 if (color[neighbor] == NONE) {
                     color[neighbor] = addTo;

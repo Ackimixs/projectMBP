@@ -13,4 +13,6 @@ namespace iofile {
 
     void writeInputFile(const std::string& filename, const Graph& g);
 
+    void testAlgo(const std::string& algoName);
+
 }
