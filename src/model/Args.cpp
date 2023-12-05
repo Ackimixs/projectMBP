@@ -141,16 +141,17 @@ void runGraphRandomArgs(std::map<std::string, std::vector<std::string>> &args) {
 
     std::string filename;
 
+    g = Graph::createRandomGraph(n, p);
+
     if (args.find("-o") != args.end() || args.find("--output") != args.end()) {
         const std::vector<std::string> fArgs = args.find("-o") != args.end() ? args["-o"] : args["--output"];
 
         filename = fArgs[0];
     } else {
-        filename = "random_" + std::to_string(n) + "_" + std::to_string(p) + ".in";
+        filename = "random_" + std::to_string(n) + "_" + std::to_string(g.m()) + ".in";
     }
 
-    Logger::info("Generating graph with " + std::to_string(n) + " nodes and " + std::to_string(p) + " probability and save it to : " + filename, __CONTEXT__);
+    Logger::info("Generated graph with " + std::to_string(n) + " nodes and " + std::to_string(g.m()) + " edges and save it to : " + filename, __CONTEXT__);
 
-    g = Graph::createRandomGraph(n, p);
     iofile::writeInputFile(filename, g);
 }
