@@ -3,3 +3,7 @@
 /build/
 /.idea/
 /results/
+/**/*.log
+/**/*.in
+/**/*.out
+/**/*.dat
