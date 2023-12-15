@@ -57,8 +57,15 @@ namespace ConstructiveHeuristic_V6 {
     std::pair<int, Partition> constructiveHeuristic(const Graph& graph);
 }
 
+/**
+ * \brief degres with std::priority_queue
+ * same as V6
+ */
+namespace ConstructiveHeuristic_V7 {
+    std::pair<int, Partition> constructiveHeuristic(const Graph& graph);
+}
 
 /**
  * the good constructive heuristic
  */
-namespace ConstructiveHeuristic = ConstructiveHeuristic_V5;
+namespace ConstructiveHeuristic = ConstructiveHeuristic_V6;

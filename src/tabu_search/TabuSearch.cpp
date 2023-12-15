@@ -63,12 +63,14 @@ std::pair<int, Partition> TabuSearch_V2::tabuSearch(const Graph &g) {
     std::vector<TabuMove> tabuList;
 
     constexpr int maxIterations = 100;
+    constexpr int maxIterationsWithoutUpgrade = 20;
     int iterations = 0;
+    int it2 = 0;
 
     constexpr int initialTabuTenure = 10; // Initial tabu tenure
     int currentTabuTenure = initialTabuTenure; // Current tabu tenure
 
-    while (iterations < maxIterations) {
+    while (iterations < maxIterations && it2 < maxIterationsWithoutUpgrade) {
 
         // swap random vertices
         auto newPartition = bestPartition;
@@ -76,17 +78,18 @@ std::pair<int, Partition> TabuSearch_V2::tabuSearch(const Graph &g) {
         const int i = rand() % bestPartition.first.size();
         const int j = rand() % bestPartition.second.size();
 
-        int newCutSize = LocalSearch_Utils::optimizeCalculateCutSize(snd, g, i, j, currentCutSize);
+        int newCutSize = LocalSearch_Utils::optimizeCalculateCutSize(newPartition, g, i, j, currentCutSize);
 
         std::swap(newPartition.first[i], newPartition.second[j]);
 
         if (!isTabuMove(tabuList, newPartition)) {
-            TabuSearch_Utils::LocalSearch(newPartition, g, newCutSize);
+            TabuSearch_Utils::LocalSearch_V2(newPartition, g, newCutSize);
 
             if (newCutSize < currentCutSize) {
                 currentCutSize = newCutSize;
                 bestPartition = newPartition;
                 currentTabuTenure = initialTabuTenure;
+                it2 = 0;
             } else {
                 currentTabuTenure--;
             }
@@ -101,17 +104,18 @@ std::pair<int, Partition> TabuSearch_V2::tabuSearch(const Graph &g) {
         }
 
         iterations++;
+        it2++;
 
         Logger::debug(LogColor::fgRed + "Iteration : " + std::to_string(iterations) + LogColor::reset, __CONTEXT__);
 
         // Manage tabu expiration
-        for (size_t i = 0; i < tabuList.size(); ++i) {
-            tabuList[i].iterationsLeft--;
+        for (size_t k = 0; k < tabuList.size(); ++k) {
+            tabuList[k].iterationsLeft--;
 
             // Remove the move from the tabu list if its tenure expires
-            if (tabuList[i].iterationsLeft <= 0) {
-                tabuList.erase(tabuList.begin() + i);
-                i--; // Adjust the index after erasing an element
+            if (tabuList[k].iterationsLeft <= 0) {
+                tabuList.erase(tabuList.begin() + k);
+                k--; // Adjust the index after erasing an element
             }
         }
     }
@@ -158,5 +162,48 @@ TabuSearch_Utils::LocalSearch(std::pair<std::vector<int>, std::vector<int>> &par
             Logger::debug("LocalSearch algorithm max iteration reached", __CONTEXT__);
             break;
         }
+    }
+}
+
+void TabuSearch_Utils::LocalSearch_V2(std::pair<std::vector<int>, std::vector<int>> &partition, const Graph &g, int &cutSize) {
+    struct {
+        int first;
+        int second;
+    } candidate_indexes{};
+
+    int iterations = 0;
+    unsigned int maxIterations = 100;
+
+    int candidateCutSize = cutSize;
+    bool improvement = true;
+
+    while (iterations < maxIterations && improvement) {
+        improvement = false;
+
+        for (int i = 0; i < g.size() / 2; i++) {
+            for (int k = 0; k < g.size() / 2; k++) {
+
+                const int newCutSize = LocalSearch_Utils::optimizeCalculateCutSize(partition, g, i, k, cutSize);
+                // 80000 nano s
+
+                if (newCutSize < candidateCutSize) {
+                    // Logger::debug("Find better solution : " + std::to_string(newCutSize) + " !", __CONTEXT__);
+
+                    improvement = true;
+                    candidate_indexes = {i, k};
+                    candidateCutSize = newCutSize;
+                }
+            }
+        }
+
+        if (improvement) {
+            const int tmp = partition.first[candidate_indexes.first];
+            partition.first[candidate_indexes.first] = partition.second[candidate_indexes.second];
+            partition.second[candidate_indexes.second] = tmp;
+            cutSize = candidateCutSize;
+        }
+
+        iterations++;
+        Logger::debug(LogColor::bgRed + "Iteration : " + std::to_string(iterations) + LogColor::reset, __CONTEXT__);
     }
 }

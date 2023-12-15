@@ -222,7 +222,7 @@ ConstructiveHeuristic_V5::dfs(const int vertex, const Graph &graph, std::vector<
     }
 }
 
-std::pair<int, Partition> ConstructiveHeuristic_V6::constructiveHeuristic(const Graph& graph) {
+std::pair<int, Partition> ConstructiveHeuristic_V6::constructiveHeuristic(const Graph& graph) { // Complexity : O(n + m * (n log n)) => O(m * n log n)
     if (graph.size() % 2 != 0) {
         Logger::error("Number of vertices is not even", __CONTEXT__);
         return std::make_pair(-1, std::make_pair(std::vector<int>(), std::vector<int>()));
@@ -240,11 +240,11 @@ std::pair<int, Partition> ConstructiveHeuristic_V6::constructiveHeuristic(const 
 
     std::sort(vDeg.begin(), vDeg.end(), [](const std::pair<int, int>& a, const std::pair<int, int>& b) {
         return a.second > b.second;
-    });
+    });// O(n log n)
 
     Color addTo = BLUE;
 
-    for (auto [v, deg] : vDeg) {
+    for (auto [v, deg] : vDeg) {// O(n)
         if (color[v] == NONE) {
             color[v] = addTo;
             if (addTo == BLUE && resPart.first.size() < graph.size() / 2) {
@@ -252,8 +252,19 @@ std::pair<int, Partition> ConstructiveHeuristic_V6::constructiveHeuristic(const 
             } else {
                 resPart.second.push_back(v);
             }
-            // TODO add a good criteria that take the neighbor
+
+            std::vector<std::pair<int, int>> neighborDegrees;
             for (auto neighbor : graph[v]) {
+                if (color[neighbor] == NONE) {
+                    neighborDegrees.emplace_back(neighbor, graph.degree(neighbor));
+                }
+            }
+            std::sort(neighborDegrees.begin(), neighborDegrees.end(), [](const std::pair<int, int>& a, const std::pair<int, int>& b) {
+                return a.second < b.second;
+            });// O(n log n)
+
+            for (int k = 0; k < neighborDegrees.size() / 2; k++) {// O(n)
+                auto [neighbor, _x] = neighborDegrees[k];
                 if (color[neighbor] == NONE) {
                     color[neighbor] = addTo;
                     if (addTo == BLUE && resPart.first.size() < graph.size() / 2) {
@@ -263,6 +274,65 @@ std::pair<int, Partition> ConstructiveHeuristic_V6::constructiveHeuristic(const 
                     }
                 }
             }
+
+            addTo = addTo == BLUE ? RED : BLUE;
+        }
+    }
+
+    return std::make_pair(calculateCutSize(resPart, graph), resPart);
+}
+
+std::pair<int, Partition> ConstructiveHeuristic_V7::constructiveHeuristic(const Graph& graph) {
+    if (graph.size() % 2 != 0) {
+        Logger::error("Number of vertices is not even", __CONTEXT__);
+        return std::make_pair(-1, std::make_pair(std::vector<int>(), std::vector<int>()));
+    }
+
+    Partition resPart;
+
+    auto color = std::vector(graph.size(), NONE);
+
+    // Use a priority queue instead of a vector
+    std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::less<>> vDeg;
+
+    for (int i = 0; i < graph.size(); i++) {
+        vDeg.push(std::make_pair(graph.degree(i), i));
+    }
+
+    Color addTo = BLUE;
+
+    while (!vDeg.empty()) {
+        auto [deg, v] = vDeg.top();
+        vDeg.pop();
+
+        if (color[v] == NONE) {
+            color[v] = addTo;
+            if (addTo == BLUE && resPart.first.size() < graph.size() / 2) {
+                resPart.first.push_back(v);
+            } else {
+                resPart.second.push_back(v);
+            }
+
+            std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::less<>> neighborDegrees;
+            for (auto neighbor : graph[v]) {
+                if (color[neighbor] == NONE) {
+                    neighborDegrees.push(std::make_pair(graph.degree(neighbor), neighbor));
+                }
+            }
+
+            while (!neighborDegrees.empty()) {
+                auto [neighborDeg, maxNeighbor] = neighborDegrees.top();
+                neighborDegrees.pop();
+                if (color[maxNeighbor] == NONE) {
+                    color[maxNeighbor] = addTo;
+                    if (addTo == BLUE && resPart.first.size() < graph.size() / 2) {
+                        resPart.first.push_back(maxNeighbor);
+                    } else {
+                        resPart.second.push_back(maxNeighbor);
+                    }
+                }
+            }
+
             addTo = addTo == BLUE ? RED : BLUE;
         }
     }

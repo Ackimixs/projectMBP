@@ -54,6 +54,8 @@ void readArgs(std::map <std::string, std::vector<std::string>> &args, const int 
 
     if (args.find("--debug") != args.end()) {
         Logger::setLogLevel(LogLevel::DEBUG);
+    } else if (args.find("--no-log") != args.end()) {
+        Logger::setLogLevel(LogLevel::WARNING);
     } else {
         Logger::setLogLevel(LogLevel::INFO);
     }
@@ -158,6 +160,6 @@ void runGraphRandomArgs(std::map<std::string, std::vector<std::string>> &args) {
 
 void runGraphTestAlgo(std::map<std::string, std::vector<std::string>>& args, const std::string& algoName) {
 
-    iofile::testAlgo(algoName);
+    iofile::testAlgo(algoName, args);
 
 }

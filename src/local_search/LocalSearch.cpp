@@ -193,6 +193,8 @@ std::pair<int, Partition> LocalSearch_V4::localSearch(const Graph &g) {
         exit(EXIT_FAILURE);
     }
 
+    const unsigned int graphSize = g.size();
+
     auto [fst, snd] = ConstructiveHeuristic::constructiveHeuristic(g);
 
     Logger::debug("Local search - solution find by constructive heuristic : " + std::to_string(fst), __CONTEXT__);
@@ -207,36 +209,33 @@ std::pair<int, Partition> LocalSearch_V4::localSearch(const Graph &g) {
     } candidate_indexes{};
 
     int iterations = 0;
-    unsigned int maxIterations = g.size();
+    unsigned int maxIterations = 100;
 
     bool improvement = true;
 
     while (iterations < maxIterations && improvement) {
         improvement = false;
 
-        // Make an iteration to every vertex and get the best
-        // sooooooooooo fucking long
-        for (int i = 0; i < newPartition.first.size(); i++) {
-            for (int k = 0; k < newPartition.second.size(); k++) {
+        for (int i = 0; i < graphSize / 2; i++) {
+            for (int k = 0; k < graphSize / 2; k++) {
 
                 const int newCutSize = LocalSearch_Utils::optimizeCalculateCutSize(newPartition, g, i, k, cutSize);
-                // 100 ms
+                // 80000 nano s
 
                 if (newCutSize < candidateCutSize) {
                     // Logger::debug("Find better solution : " + std::to_string(newCutSize) + " !", __CONTEXT__);
 
                     improvement = true;
-
-                    candidate_indexes.first = i;
-                    candidate_indexes.second = k;
-
+                    candidate_indexes = {i, k};
                     candidateCutSize = newCutSize;
                 }
             }
         }
 
         if (improvement) {
-            std::swap(newPartition.first[candidate_indexes.first], newPartition.second[candidate_indexes.second]);
+            const int tmp = newPartition.first[candidate_indexes.first];
+            newPartition.first[candidate_indexes.first] = newPartition.second[candidate_indexes.second];
+            newPartition.second[candidate_indexes.second] = tmp;
             cutSize = candidateCutSize;
         }
 

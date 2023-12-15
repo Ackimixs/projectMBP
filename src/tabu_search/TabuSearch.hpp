@@ -22,6 +22,8 @@ namespace TabuSearch_V2 {
 
 namespace TabuSearch_Utils {
     void LocalSearch(std::pair<std::vector<int>, std::vector<int>> &partition, const Graph &g, int &cutSize);
+
+    void LocalSearch_V2(std::pair<std::vector<int>, std::vector<int>> &partition, const Graph &g, int &cutSize);
 }
 
-namespace TabuSearch = TabuSearch_V1;
+namespace TabuSearch = TabuSearch_V2;

@@ -37,6 +37,8 @@ Graph iofile::readFile(const std::string &filename) {
             listOfEdge.ignore(2, ' ');
         }
 
+        Logger::info("Graph created, size : " + std::to_string(g.size()) + " m : " + std::to_string(g.m()), __CONTEXT__);
+
         return g;
     } else {
         Logger::error("Unable to open file " + filename, __CONTEXT__);
@@ -129,30 +131,46 @@ void iofile::writeInputFile(const std::string &filename, const Graph &g) {
     }
 }
 
-void iofile::testAlgo(const std::string& algoName) {
+void iofile::testAlgo(const std::string& algoName, std::map<std::string, std::vector<std::string>>& args) {
 
     std::pair<int, Partition> (*algo)(const Graph&);
-
-    int prob[] = {25, 50, 75};
-
+    std::vector<int> prob;
     std::vector<int> size;
+
+    unsigned int nbTest;
+
+    if (args.find("-p") != args.end() || args.find("--prob") != args.end()) {
+        std::vector<std::string> probArgs = args.find("-p") != args.end() ? args["-p"] : args["--prob"];
+        for (const std::string& p : probArgs) {
+            prob.push_back(std::stoi(p));
+        }
+    } else {
+        prob = {25, 50, 75};
+    }
+
+    if (args.find("-s") != args.end() || args.find("--size") != args.end()) {
+        std::vector<std::string> sizeArgs = args.find("-s") != args.end() ? args["-s"] : args["--size"];
+        for (const std::string& s : sizeArgs) {
+            size.push_back(std::stoi(s));
+        }
+    } else {
+        size = {10, 20, 30};
+    }
+
+    if (args.find("--repeat") != args.end()) {
+        nbTest = std::stoi(args["--repeat"][0]);
+    } else {
+        nbTest = 10;
+    }
 
     if (algoName == "exact") {
         algo = Exact::exactAlgorithm;
-
-        size = {6, 10, 12, 16, 20, 22, 24, 26};
     } else if (algoName == "constructive") {
         algo = ConstructiveHeuristic::constructiveHeuristic;
-
-        size = {10, 20, 30, 40, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000};
     } else if (algoName == "local_search") {
         algo = LocalSearch::localSearch;
-
-        size = {10, 20, 30, 40, 50, 100, 200, 300, 400, 500};
     } else if (algoName == "tabu_search") {
         algo = TabuSearch::tabuSearch;
-
-        size = {10, 20, 30, 40, 50, 100, 200, 300, 400, 500};
     } else {
         Logger::error("No algo named : " + algoName, __CONTEXT__);
         exit(EXIT_FAILURE);
@@ -166,7 +184,7 @@ void iofile::testAlgo(const std::string& algoName) {
 
             long totalTime = 0;
 
-            for (int k = 0; k < 5; k++) {
+            for (int k = 0; k < nbTest; k++) {
                 Graph g = Graph::createRandomGraph(i, p / 100.0);
 
                 std::pair<int, Partition> part;
@@ -187,7 +205,7 @@ void iofile::testAlgo(const std::string& algoName) {
 
             }
 
-            totalTime /= 10;
+            totalTime /= nbTest;
 
             outputFile << i << " " << totalTime << "\n";
         }
