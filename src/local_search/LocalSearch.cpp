@@ -193,15 +193,18 @@ std::pair<int, Partition> LocalSearch_V4::localSearch(const Graph &g) {
         exit(EXIT_FAILURE);
     }
 
-    const unsigned int graphSize = g.size();
-
     auto [fst, snd] = ConstructiveHeuristic::constructiveHeuristic(g);
 
-    Logger::debug("Local search - solution find by constructive heuristic : " + std::to_string(fst), __CONTEXT__);
+    // Logger::debug("Local search - solution find by constructive heuristic : " + std::to_string(fst), __CONTEXT__);
 
-    Partition newPartition = snd;
+    return mainLocalSearch(snd, fst, g);
+}
 
-    int cutSize = fst, candidateCutSize = fst;
+std::pair<int, Partition> LocalSearch_V4::mainLocalSearch(const Partition& partition, int& cutSize, const Graph& g) {
+    const int baseCutSize = cutSize;
+    int candidateCutSize = cutSize;
+
+    Partition newPartition = partition;
 
     struct {
         int first;
@@ -209,15 +212,15 @@ std::pair<int, Partition> LocalSearch_V4::localSearch(const Graph &g) {
     } candidate_indexes{};
 
     int iterations = 0;
-    unsigned int maxIterations = 100;
+    const unsigned int maxIterations = partition.first.size();
 
     bool improvement = true;
 
     while (iterations < maxIterations && improvement) {
         improvement = false;
 
-        for (int i = 0; i < graphSize / 2; i++) {
-            for (int k = 0; k < graphSize / 2; k++) {
+        for (int i = 0; i < partition.first.size(); i++) {
+            for (int k = 0; k < partition.first.size(); k++) {
 
                 const int newCutSize = LocalSearch_Utils::optimizeCalculateCutSize(newPartition, g, i, k, cutSize);
                 // 80000 nano s
@@ -233,17 +236,15 @@ std::pair<int, Partition> LocalSearch_V4::localSearch(const Graph &g) {
         }
 
         if (improvement) {
-            const int tmp = newPartition.first[candidate_indexes.first];
-            newPartition.first[candidate_indexes.first] = newPartition.second[candidate_indexes.second];
-            newPartition.second[candidate_indexes.second] = tmp;
+            std::swap(newPartition.first[candidate_indexes.first], newPartition.second[candidate_indexes.second]);
             cutSize = candidateCutSize;
         }
 
         iterations++;
-        Logger::debug(LogColor::bgRed + "Iteration : " + std::to_string(iterations) + LogColor::reset, __CONTEXT__);
+        // Logger::debug(LogColor::bgRed + "Iteration : " + std::to_string(iterations) + LogColor::reset, __CONTEXT__);
     }
 
-    Logger::debug("Cut size difference : " + std::to_string(fst - cutSize), __CONTEXT__);
+    // Logger::debug("Cut size difference : " + std::to_string(baseCutSize - cutSize), __CONTEXT__);
 
     return std::make_pair(cutSize, newPartition);
 }

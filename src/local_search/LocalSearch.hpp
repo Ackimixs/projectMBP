@@ -2,6 +2,8 @@
 
 #include "../constructive/ConstructiveHeuristic.hpp"
 
+#include <algorithm>
+
 /**
  * think this algo look good but constructive heuristic is not good enough
  *
@@ -38,6 +40,7 @@ namespace LocalSearch_V3 {
  */
 namespace LocalSearch_V4 {
     std::pair<int, Partition> localSearch(const Graph& g);
+    std::pair<int, Partition> mainLocalSearch(const Partition& partition, int& cutSize, const Graph& g);
 }
 
 /**

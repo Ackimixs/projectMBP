@@ -94,13 +94,24 @@ void iofile::writeResultFile(const std::string& filename, const Graph& g, const 
 
         outputFile << g.size() << " " << vertexBetweenSet << "\n";
 
-        for (int v : v1) {
+        for (int i = 0; i < v1.size(); i++) {
+            if (v1[i]) {
+                outputFile << i << " ";
+            }
+        }
+
+        for (int i = 0; i < v2.size(); i++) {
+            if (v2[i]) {
+                outputFile << i << " ";
+            }
+        }
+/*        for (int v : v1) {
             outputFile << v << " ";
         }
         outputFile << "\n";
         for (int v : v2) {
             outputFile << v << " ";
-        }
+        }*/
         outputFile << "\n";
 
     } else {
@@ -139,6 +150,8 @@ void iofile::testAlgo(const std::string& algoName, std::map<std::string, std::ve
 
     unsigned int nbTest;
 
+    unsigned int nbOfCara = 0;
+
     if (args.find("-p") != args.end() || args.find("--prob") != args.end()) {
         std::vector<std::string> probArgs = args.find("-p") != args.end() ? args["-p"] : args["--prob"];
         for (const std::string& p : probArgs) {
@@ -176,6 +189,11 @@ void iofile::testAlgo(const std::string& algoName, std::map<std::string, std::ve
         exit(EXIT_FAILURE);
     }
 
+    std::sort(size.begin(), size.end());
+    std::sort(prob.begin(), prob.end());
+
+    Logger::test("Testing " + algoName + " algorithm", __CONTEXT__);
+
     for (int p : prob) {
 
         std::ofstream outputFile("../report/data/" + algoName + "_" + std::to_string(p) + ".dat");
@@ -206,6 +224,39 @@ void iofile::testAlgo(const std::string& algoName, std::map<std::string, std::ve
             }
 
             totalTime /= nbTest;
+
+            std::cout << '\r';
+            for (int j = 0; j < nbOfCara; ++j) {
+                std::cout << ' ';
+            }
+            std::cout << '\r';
+
+            std::stringstream ss;
+
+            std::string context = __CONTEXT__;
+
+            ss << LogColor::bgBlack << LogColor::fgWhite << Utils::getCurrentDateTime() << LogColor::reset << " ";
+            ss << LogColor::fgWhite << context << LogColor::reset << " ";
+            ss << LogColor::fgRed << LogColor::fgYellow << LogColor::bold;
+            ss << std::setw(60 - (static_cast<int>(context.size()) - static_cast<int>(std::string("TEST").size()))) << "TEST" << LogColor::reset << " ";
+
+            ss << "Algo : " << LogColor::fgRed << algoName << LogColor::reset << ", prob : ";
+            for (int k : prob) {
+                if (k == p) {
+                    ss << " " << LogColor::fgRed << k << "%" << LogColor::reset;
+                } else {
+                    ss << " " << k << "%";
+                }
+            }
+
+            ss << ", size : " << i;
+
+            ss << ", time : " << totalTime << " micro s";
+
+            std::cout << ss.str();
+            std::cout.flush();
+
+            nbOfCara = ss.str().size();
 
             outputFile << i << " " << totalTime << "\n";
         }

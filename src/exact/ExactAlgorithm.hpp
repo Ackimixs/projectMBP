@@ -20,7 +20,7 @@ namespace Exact_V1 {
 namespace Exact_V2 {
     std::pair<int, Partition> exactAlgorithm(const Graph& g);
 
-    bool checkPartition(const Graph &g, int &partSize, std::vector<int> vec);
+    bool checkPartition(const Graph &g, const int &partSize, std::vector<int> vec);
 
     void checkAllPair(const Graph &g, Partition &part, int &partSize, std::vector<int> vector, int n, int start, int k = 2);
 }

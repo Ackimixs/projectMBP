@@ -160,6 +160,10 @@ void runGraphRandomArgs(std::map<std::string, std::vector<std::string>> &args) {
 
 void runGraphTestAlgo(std::map<std::string, std::vector<std::string>>& args, const std::string& algoName) {
 
+    if (args.find("debug") == args.end()) {
+        Logger::setLogLevel(LogLevel::TEST);
+    }
+
     iofile::testAlgo(algoName, args);
 
 }

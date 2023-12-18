@@ -10,6 +10,7 @@
 enum class LogLevel {
     DEBUG,
     INFO,
+    TEST,
     WARNING,
     ERROR,
     CRITICAL
@@ -30,6 +31,9 @@ class Logger {
                 case LogLevel::INFO:
                     std::cout << LogColor::fgGreen;
                     break;
+                case LogLevel::TEST:
+                    std::cout << LogColor::fgRed << LogColor::fgYellow;
+                    break;
                 case LogLevel::WARNING:
                     std::cout << LogColor::fgYellow;
                     break;
@@ -40,6 +44,8 @@ class Logger {
                     std::cout << LogColor::fgRed << LogColor::bold;
                     break;
             }
+
+            std::cout << LogColor::bold;
 
             std::cout << std::setw(60 - (static_cast<int>(context.size()) - static_cast<int>(enumToString(level).size()))) << enumToString(level) << LogColor::reset << " ";
 
@@ -53,6 +59,8 @@ class Logger {
                 return "DEBUG";
             case LogLevel::INFO:
                 return "INFO";
+            case LogLevel::TEST:
+                return "TEST";
             case LogLevel::WARNING:
                 return "WARNING";
             case LogLevel::ERROR:
@@ -75,6 +83,10 @@ public:
 
     static void info(const std::string &message, const std::string& context) {
         log(LogLevel::INFO, message, context);
+    }
+
+    static void test(const std::string &message, const std::string& context) {
+        log(LogLevel::TEST, message, context);
     }
 
     static void warning(const std::string &message, const std::string& context) {

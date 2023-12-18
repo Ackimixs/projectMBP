@@ -32,7 +32,7 @@ std::pair<int, Partition> TabuSearch_V1::tabuSearch(const Graph &g) {
 
         // int c = calculateCutSize(newNewPartition, g);
 
-        TabuSearch_Utils::LocalSearch(newPartition, g, c);
+        LocalSearch::mainLocalSearch(newPartition, c, g);
 
         if (c < fst) {
             fst = c;
@@ -83,7 +83,7 @@ std::pair<int, Partition> TabuSearch_V2::tabuSearch(const Graph &g) {
         std::swap(newPartition.first[i], newPartition.second[j]);
 
         if (!isTabuMove(tabuList, newPartition)) {
-            TabuSearch_Utils::LocalSearch_V2(newPartition, g, newCutSize);
+            LocalSearch::mainLocalSearch(newPartition, newCutSize, g);
 
             if (newCutSize < currentCutSize) {
                 currentCutSize = newCutSize;
@@ -128,82 +128,4 @@ std::pair<int, Partition> TabuSearch_V2::tabuSearch(const Graph &g) {
 bool TabuSearch_V2::isTabuMove(const std::vector<TabuMove>& tabuList, Partition& move) {
     std::sort(move.first.begin(), move.first.end());
     return std::any_of(tabuList.begin(), tabuList.end(), [&move](const TabuMove& m) { return m.move.first == move.first; });
-}
-
-void
-TabuSearch_Utils::LocalSearch(std::pair<std::vector<int>, std::vector<int>> &partition, const Graph &g, int &cutSize) {
-
-    int maxIteration = 0;
-
-    bool improvement = true;
-
-    while (improvement) {
-        improvement = false;
-
-        for (int i = 0; i < partition.first.size(); i++) {
-            const int newCutSize = LocalSearch_Utils::optimizeCalculateCutSize(partition, g, i, i, cutSize);
-
-            if (newCutSize < cutSize) {
-                // Logger::debug("Find better solution : " + std::to_string(newCutSize) + " !", __CONTEXT__);
-
-                improvement = true;
-
-                cutSize = newCutSize;
-
-                std::swap(partition.first[i], partition.second[i]);
-            }
-        }
-
-        maxIteration++;
-        // Logger::debug(LogColor::bgRed + "Iteration : " + std::to_string(maxIteration) + LogColor::reset, __CONTEXT__);
-
-        if (maxIteration == 500) {
-            // maxIteration will break the loop
-            Logger::debug("LocalSearch algorithm max iteration reached", __CONTEXT__);
-            break;
-        }
-    }
-}
-
-void TabuSearch_Utils::LocalSearch_V2(std::pair<std::vector<int>, std::vector<int>> &partition, const Graph &g, int &cutSize) {
-    struct {
-        int first;
-        int second;
-    } candidate_indexes{};
-
-    int iterations = 0;
-    unsigned int maxIterations = 100;
-
-    int candidateCutSize = cutSize;
-    bool improvement = true;
-
-    while (iterations < maxIterations && improvement) {
-        improvement = false;
-
-        for (int i = 0; i < g.size() / 2; i++) {
-            for (int k = 0; k < g.size() / 2; k++) {
-
-                const int newCutSize = LocalSearch_Utils::optimizeCalculateCutSize(partition, g, i, k, cutSize);
-                // 80000 nano s
-
-                if (newCutSize < candidateCutSize) {
-                    // Logger::debug("Find better solution : " + std::to_string(newCutSize) + " !", __CONTEXT__);
-
-                    improvement = true;
-                    candidate_indexes = {i, k};
-                    candidateCutSize = newCutSize;
-                }
-            }
-        }
-
-        if (improvement) {
-            const int tmp = partition.first[candidate_indexes.first];
-            partition.first[candidate_indexes.first] = partition.second[candidate_indexes.second];
-            partition.second[candidate_indexes.second] = tmp;
-            cutSize = candidateCutSize;
-        }
-
-        iterations++;
-        Logger::debug(LogColor::bgRed + "Iteration : " + std::to_string(iterations) + LogColor::reset, __CONTEXT__);
-    }
 }
