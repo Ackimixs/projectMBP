@@ -246,11 +246,13 @@ std::pair<int, Partition> ConstructiveHeuristic_V6::constructiveHeuristic(const 
 
     for (auto [v, deg] : vDeg) {// O(n)
         if (color[v] == NONE) {
-            color[v] = addTo;
             if (addTo == BLUE && resPart.first.size() < graph.size() / 2) {
                 resPart.first.push_back(v);
+                color[v] = BLUE;
             } else {
                 resPart.second.push_back(v);
+                color[v] = RED;
+                addTo = RED;
             }
 
             std::vector<std::pair<int, int>> neighborDegrees;
@@ -266,11 +268,12 @@ std::pair<int, Partition> ConstructiveHeuristic_V6::constructiveHeuristic(const 
             for (int k = 0; k < neighborDegrees.size() / 2; k++) {// O(n)
                 auto [neighbor, _x] = neighborDegrees[k];
                 if (color[neighbor] == NONE) {
-                    color[neighbor] = addTo;
                     if (addTo == BLUE && resPart.first.size() < graph.size() / 2) {
                         resPart.first.push_back(neighbor);
+                        color[neighbor] = BLUE;
                     } else {
                         resPart.second.push_back(neighbor);
+                        color[neighbor] = RED;
                     }
                 }
             }
