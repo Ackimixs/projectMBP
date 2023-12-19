@@ -14,15 +14,15 @@ std::pair<int, Partition> Exact_V1::exactAlgorithm(const Graph& g) {
     // get every pair like [[0, 1, 2], [0, 1, 3], [0, 1, 4], ...]
     auto pair = getAllPair(g.size());
 
-    for (int j = 0; j < pair.size() / 2; j++) {
+    for (int j = 0; j < pair.size(); j++) {
         // Convert vector to unordered_set
-        std::vector<int> set1(pair[j].begin(), pair[j].end());
-        std::vector<int> set2(pair[pair.size() - j - 1].begin(), pair[pair.size() - j - 1].end());
+        std::vector<int> vec1 = pair[j];
+        std::vector<int> vec2 = pair[pair.size() - 1 - j];
 
         int numberOfVertex = 0;
 
-        for (const int k : set1) {
-            for (const int l : set2) {
+        for (const int k : vec1) {
+            for (const int l : vec2) {
                 if (g.isEdge(k, l)) {
                     numberOfVertex++;
                 }
@@ -31,7 +31,7 @@ std::pair<int, Partition> Exact_V1::exactAlgorithm(const Graph& g) {
 
         if (numberOfVertex < minNumberOfVertex) {
             minNumberOfVertex = numberOfVertex;
-            res = std::make_pair(set1, set2);
+            res = std::make_pair(vec1, vec2);
         }
 
     }
@@ -72,7 +72,7 @@ std::vector<std::vector<int>> Exact_V1::getAllPair(int n) {
     return result;
 }
 
-std::pair<int, Partition> Exact_V2::exactAlgorithm(const Graph &g) { // O(n^2)
+std::pair<int, Partition> Exact_V2::exactAlgorithm(const Graph &g) { // O(2^n)
     if (g.size() % 2 != 0) {
         Logger::error("Number of vertices is not even", __CONTEXT__);
         return std::make_pair(-1, std::make_pair(std::vector<int>(), std::vector<int>()));

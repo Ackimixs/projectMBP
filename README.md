@@ -9,7 +9,7 @@ go to the root of the project then make sure you have cmake version :
 Then run : 
 ```c++
 cmake -S . -b build
-cmake build
+cmake --build build
 cd build
 ./projectMBP [args...]
 ```

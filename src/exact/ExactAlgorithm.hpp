@@ -16,6 +16,7 @@ namespace Exact_V1 {
  * Take minus time when the graph has not a big number of edge, when the graph has a lot there is more things to check
  * and the the stop condition of the tree recursion is not often reached because the time that there is more edge is
  * when the two set are almost full.
+ * more size more good
  */
 namespace Exact_V2 {
     std::pair<int, Partition> exactAlgorithm(const Graph& g);
