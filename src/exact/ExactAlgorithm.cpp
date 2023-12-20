@@ -90,12 +90,12 @@ std::pair<int, Partition> Exact_V2::exactAlgorithm(const Graph &g) { // O(2^n)
 
 void Exact_V2::checkAllPair(const Graph &g, Partition &part, int &partSize, std::vector<int> vector, const int n, const int start, const int k) {
 
-    if (vector.size() == (g.size() / 2)) {
+    if (vector.size() == n / 2) {
 
         std::vector<int> oppositeSet;
 
         for (int i = 0; i < g.size(); i++) {
-            if (std::find(vector.begin(), vector.end(), i) != vector.end()) {
+            if (std::find(vector.begin(), vector.end(), i) == vector.end()) {
                 oppositeSet.push_back(i);
             }
         }
@@ -136,7 +136,7 @@ bool Exact_V2::checkPartition(const Graph &g, const int &partSize, std::vector<i
     std::vector<int> oppositeSet;
 
     // the oppositeSet is all the vertex before the greatest of the set
-    for (int i = 0; i < (*vec.begin()); i++) {
+    for (int i = 0; i < (*(vec.end() - 1)); i++) {
         if (std::find(vec.begin(), vec.end(), i) == vec.end()) {
             oppositeSet.push_back(i);
         }

@@ -178,6 +178,10 @@ void iofile::testAlgo(const std::string& algoName, std::map<std::string, std::ve
 
     if (algoName == "exact") {
         algo = Exact::exactAlgorithm;
+    } else if (algoName == "exact_V1") {
+        algo = Exact_V1::exactAlgorithm;
+    } else if (algoName == "exact_V2") {
+        algo = Exact_V2::exactAlgorithm;
     } else if (algoName == "constructive") {
         algo = ConstructiveHeuristic::constructiveHeuristic;
     } else if (algoName == "local_search") {
