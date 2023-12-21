@@ -62,8 +62,8 @@ std::pair<int, Partition> TabuSearch_V2::tabuSearch(const Graph &g) {
 
     std::vector<TabuMove> tabuList;
 
-    const unsigned int maxIterations = g.size() / 4;
-    const unsigned int maxIterationsWithoutUpgrade = g.size() / 10;
+    const unsigned int maxIterations = g.size() / 2;
+    const unsigned int maxIterationsWithoutUpgrade = g.size() / 5;
     int iterations = 0;
     int it2 = 0;
 

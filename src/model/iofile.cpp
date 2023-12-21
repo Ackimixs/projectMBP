@@ -94,24 +94,13 @@ void iofile::writeResultFile(const std::string& filename, const Graph& g, const 
 
         outputFile << g.size() << " " << vertexBetweenSet << "\n";
 
-        for (int i = 0; i < v1.size(); i++) {
-            if (v1[i]) {
-                outputFile << i << " ";
-            }
-        }
-
-        for (int i = 0; i < v2.size(); i++) {
-            if (v2[i]) {
-                outputFile << i << " ";
-            }
-        }
-/*        for (int v : v1) {
+        for (int v : v1) {
             outputFile << v << " ";
         }
         outputFile << "\n";
         for (int v : v2) {
             outputFile << v << " ";
-        }*/
+        }
         outputFile << "\n";
 
     } else {
