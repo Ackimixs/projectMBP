@@ -5,7 +5,7 @@ Killian, Romain, Paul K, Paul B
 # How to use
 ## Compilation
 
-go to the root of the project then make sure you have cmake version :  
+go to the root of the project then make sure you have cmake version : minimum 3.18  
 Then run : 
 ```c++
 mkdir build
