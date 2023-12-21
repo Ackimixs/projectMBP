@@ -26,11 +26,13 @@ use `./projectMBP generate --help` for more
 ### Run algorithm
 use `./projectMBP algo <algoName> [args...]`  
   
-algoName : the name of the algorithm you want to run inside that list : exact, constructive, local_search, tabu_search  
+algoName : the name of the algorithm you want to run inside that list : exact, constructive, local_search, tabu_search or all  
   
 without option the program will run every graph file inside the folder : `../instance/<algoName>/*`  
 The output will be inside the the folder `../result/<algoName>/<name of the original file but with .out extension>`  
- 
+
+Special case : when you set the algorithm to `all` the program will take every files inside `../instance/new_instances` and while run those graph with every algorithm after that, the output will be inside the folder `../result/<algo>`. You can’t specify your input / output file when you use all algorithm
+
 If you want to run custom graph you have to set options :  
 			-i, --input <string> => path to the input file  
 			-o, --output <string> => path to the output file  
