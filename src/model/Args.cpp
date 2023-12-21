@@ -47,6 +47,19 @@ void readArgs(std::map <std::string, std::vector<std::string>> &args, const int 
         exit(EXIT_SUCCESS);
     }
 
+    if ((args.find("-h") != args.end() || args.find("--help") != args.end()) && argc > 2 && std::string(argv[1]) == "test")
+    {
+        std::cout << "Usage : ./projectMBP test <algoName> [options]" << std::endl;
+        std::cout << "Graph v" << PROJECT_VERSION << std::endl;
+        std::cout << std::endl;
+        std::cout << "Options:" << std::endl;
+        std::cout << "  -h, --help" << std::endl;
+        std::cout << "  -v, --version" << std::endl;
+        std::cout << "  --debug" << std::endl;
+        std::cout << "  -n, --nodes [list of number, int]" << std::endl;
+        std::cout << "  -p, --probability [list of number, double]" << std::endl;
+    }
+
     if (args.find("-v") != args.end() || args.find("--version") != args.end()) {
         std::cout << "Graph v" << PROJECT_VERSION << std::endl;
         exit(EXIT_SUCCESS);
