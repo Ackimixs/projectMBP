@@ -3,7 +3,11 @@
 #include "../local_search/LocalSearch.hpp"
 
 struct TabuMove {
-    Partition move;
+    struct
+    {
+        int firstIndex;
+        int secondIndex;
+    } index;
     int iterationsLeft;
 };
 
@@ -17,7 +21,7 @@ namespace TabuSearch_V1 {
 namespace TabuSearch_V2 {
     std::pair<int, Partition> tabuSearch(const Graph& g);
 
-    bool isTabuMove(const std::vector<TabuMove>& tabuList, Partition& move);
+    bool isTabuMove(const std::vector<TabuMove>& tabuList, const int firstIndex, const int secondIndex);
 }
 
 namespace TabuSearch = TabuSearch_V2;

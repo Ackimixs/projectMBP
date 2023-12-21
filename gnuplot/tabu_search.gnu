@@ -2,7 +2,7 @@ set title "Execution Time of the tabu search algorithm"
 set xlabel "number of vertices"
 set ylabel "time in microseconds (10^-6 seconds)"
 
-f(x) = a * (x + x ** 4)
+f(x) = a * (x + x ** 5)
 
 fit f(x) '../report/data/tabu_search_25.dat' via a
 

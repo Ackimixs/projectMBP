@@ -62,8 +62,8 @@ std::pair<int, Partition> TabuSearch_V2::tabuSearch(const Graph &g) {
 
     std::vector<TabuMove> tabuList;
 
-    constexpr int maxIterations = 100;
-    constexpr int maxIterationsWithoutUpgrade = 20;
+    const unsigned int maxIterations = g.size() / 4;
+    const unsigned int maxIterationsWithoutUpgrade = g.size() / 10;
     int iterations = 0;
     int it2 = 0;
 
@@ -82,20 +82,20 @@ std::pair<int, Partition> TabuSearch_V2::tabuSearch(const Graph &g) {
 
         std::swap(newPartition.first[i], newPartition.second[j]);
 
-        if (!isTabuMove(tabuList, newPartition)) {
-            LocalSearch::mainLocalSearch(newPartition, newCutSize, g);
+        if (!isTabuMove(tabuList, i, j)) {
+            auto [a, b] = LocalSearch::mainLocalSearch(newPartition, newCutSize, g);
 
-            if (newCutSize < currentCutSize) {
-                currentCutSize = newCutSize;
-                bestPartition = newPartition;
+            if (a < currentCutSize) {
+                currentCutSize = a;
+                bestPartition = b;
                 currentTabuTenure = initialTabuTenure;
                 it2 = 0;
             } else {
                 currentTabuTenure--;
             }
 
-            TabuMove newMove;
-            newMove.move = newPartition;
+            TabuMove newMove{};
+            newMove.index = {i, j};
             newMove.iterationsLeft = currentTabuTenure;
 
             tabuList.push_back(newMove);
@@ -125,7 +125,6 @@ std::pair<int, Partition> TabuSearch_V2::tabuSearch(const Graph &g) {
     return std::make_pair(currentCutSize, bestPartition);
 }
 
-bool TabuSearch_V2::isTabuMove(const std::vector<TabuMove>& tabuList, Partition& move) {
-    std::sort(move.first.begin(), move.first.end());
-    return std::any_of(tabuList.begin(), tabuList.end(), [&move](const TabuMove& m) { return m.move.first == move.first; });
+bool TabuSearch_V2::isTabuMove(const std::vector<TabuMove>& tabuList, const int firstIndex, const int secondIndex) {
+    return std::any_of(tabuList.begin(), tabuList.end(), [&firstIndex, &secondIndex](const TabuMove& m) { return (m.index.firstIndex == firstIndex && m.index.secondIndex == secondIndex); });
 }
