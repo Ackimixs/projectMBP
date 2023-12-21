@@ -8,9 +8,10 @@ Killian, Romain, Paul K, Paul B
 go to the root of the project then make sure you have cmake version :  
 Then run : 
 ```c++
-cmake -S . -b build
-cmake --build build
+mkdir build
 cd build
+cmake -S ../
+cmake --build .
 ./projectMBP [args...]
 ```
 
@@ -42,7 +43,7 @@ use `./projectMBP test <algoName> [args...]`
 algoName : the name of the algorithm you want to run inside that list : exact, constructive, local_search, tabu_search  
   
 options :   
-				-s, --size <list of int> => the size of the graph to test  
+				-n, --node <list of int> => the size of the graph to test  
 				-p, --prob <list of int> => the probabilies to have an edge, should be between 0 and 100  
 				--repeat <int> => number of time the program will test the graph for the same value to have a good average  
   
