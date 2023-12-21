@@ -29,7 +29,7 @@ use `./projectMBP algo <algoName> [args...]`
 algoName : the name of the algorithm you want to run inside that list : exact, constructive, local_search, tabu_search  
   
 without option the program will run every graph file inside the folder : `../instance/<algoName>/*`  
-The outp\nut will be inside the the folder `../result/<algoName>/<name of the original file but with .out extension>`  
+The output will be inside the the folder `../result/<algoName>/<name of the original file but with .out extension>`  
  
 If you want to run custom graph you have to set options :  
 			-i, --input <string> => path to the input file  
