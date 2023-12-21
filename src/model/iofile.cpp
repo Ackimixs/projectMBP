@@ -161,8 +161,8 @@ void iofile::testAlgo(const std::string& algoName, std::map<std::string, std::ve
         prob = {25, 50, 75};
     }
 
-    if (args.find("-s") != args.end() || args.find("--size") != args.end()) {
-        std::vector<std::string> sizeArgs = args.find("-s") != args.end() ? args["-s"] : args["--size"];
+    if (args.find("-n") != args.end() || args.find("--node") != args.end()) {
+        std::vector<std::string> sizeArgs = args.find("-n") != args.end() ? args["-n"] : args["--node"];
         for (const std::string& s : sizeArgs) {
             size.push_back(std::stoi(s));
         }
